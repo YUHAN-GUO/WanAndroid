@@ -42,24 +42,28 @@ public abstract class BaseActivity extends RxAppCompatActivity implements NetBro
     public static NetBroadcastReceiver.NetChangeListener netEvent;// 网络状态改变监听事件
     protected LoadingPage mLoadingPage;//loading
     private FragmentManager mFragmentManager;//添加fragment 事务管理器
+    private boolean isView =false;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // 添加到Activity工具类
         ActivityUtil.getInstance().addActivity(this);
+
         // 初始化netEvent
         netEvent = this;
         // 执行初始化方法
         NetBroadcastReceiver.registerReceiver(this);//网络变化广播注册
+        setTranslucentStatus();
         ActivityUtil.getInstance().addActivity(this);
         mFragmentManager = getSupportFragmentManager();
     }
 
+
     @Override
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);
-//        StatusBarUtil.setColorNoTranslucent(this,ContextCompat.getColor(this,R.color.colorPrimary));
-        StatusBarUtil.setTransparent(this);
+        StatusBarUtil.setColorNoTranslucent(this,ContextCompat.getColor(this,R.color.color_blue));
+//        StatusBarUtil.setTransparent(this);
         StatusBarUtilTextColor.setStatusBarMode(this,true);
     }
     @Override
@@ -86,8 +90,10 @@ public abstract class BaseActivity extends RxAppCompatActivity implements NetBro
     public void addFragment(Class<? extends BaseFragment> zClass,int layoutId){
         FragmentTransaction transaction = mFragmentManager.beginTransaction();
         String tag =  zClass.getName();
+
         // 从 fragmentManager中查找这个fragment是否存在，
         Fragment fragment = mFragmentManager.findFragmentByTag(tag);
+
         if(fragment != null){ // 如果存在就不用重新创建
             if(fragment.isAdded()){ // 如果 fragment 已经被添加
                 if(fragment.isHidden()){ // 如果fragment 已经被添加，并且处于隐藏状态，那么显示
@@ -99,7 +105,7 @@ public abstract class BaseActivity extends RxAppCompatActivity implements NetBro
                 hideOtherPage(transaction, fragment);
             }
         }else{
-             // 如果没有从fragmentManager 中通过tag 找到fragment,那么创建一个新的fragment 实例
+            // 如果没有从fragmentManager 中通过tag 找到fragment,那么创建一个新的fragment 实例
             try {
                 fragment = zClass.newInstance();
             } catch (InstantiationException e) {
@@ -173,11 +179,54 @@ public abstract class BaseActivity extends RxAppCompatActivity implements NetBro
         }
 
     }
-
-
+    /**
+     * 获取当前设备状态栏高度
+     *
+     * @return
+     */
+    public int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
+    }
+    /**
+     * 设置状态栏透明
+     *
+     * @param on
+     */
+    @TargetApi(19)
+    private void setTranslucentStatus(boolean on) {
+        Window win = getWindow();
+        WindowManager.LayoutParams winParams = win.getAttributes();
+        final int bits = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
+        if (on) {
+            winParams.flags |= bits;
+        } else {
+            winParams.flags &= ~bits;
+        }
+        win.setAttributes(winParams);
+    }
+    //判断当前设备版本号是否为4.4以上，如果是，则通过调用setTranslucentStatus让状态栏变透明
+    protected void setTranslucentStatus() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            setTranslucentStatus(true);
+        }
+    }
 
     protected void startActivity(Class<? extends Activity> zClass){
         startActivity(new Intent(this,zClass));
+    }
+    protected void startActivity(Class<? extends Activity> zClass, Bundle bundle){
+        startActivity(new Intent(this,zClass).putExtras(bundle));
+    }
+    protected void startActivityForResult(Class<? extends Activity> zClass,int coode){
+        startActivityForResult(new Intent(this,zClass),coode);
+    }
+    protected void startActivityForResult(Class<? extends Activity> zClass, Bundle bundle,int coode){
+        startActivityForResult(new Intent(this,zClass).putExtras(bundle),coode);
     }
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -239,12 +288,14 @@ public abstract class BaseActivity extends RxAppCompatActivity implements NetBro
     @Override
     public void onNetChange(boolean netWorkState) {
         if (netWorkState){
-            Toast.makeText(this, "有网toast在BaseActivity", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "有网toast在BaseActivity", Toast.LENGTH_SHORT).show();
         }else{
-            Toast.makeText(this, "没网toast在BaseActivity", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "没网toast在BaseActivity", Toast.LENGTH_SHORT).show();
 
         }
     }
+
+
 
     /**
      * 获取网络类型

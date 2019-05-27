@@ -7,6 +7,15 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+
+
+    <!--启动页使用 清单文件配置-->
+    <style name="SplashTheme" parent="AppTheme">
+        <item name="android:windowBackground">@drawable/welcome</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
     <style name="DefaultCityPickerAnimation" parent="@android:style/Animation">
         <item name="android:windowEnterAnimation">@anim/cp_push_bottom_in</item>
         <item name="android:windowExitAnimation">@anim/cp_push_bottom_out</item>

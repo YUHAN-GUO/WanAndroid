@@ -21,15 +21,15 @@ public abstract class BaseFragment extends RxFragment {
     /**
      * 是否初始化过布局
      */
-    protected boolean isViewInitiated;
+    public boolean isViewInitiated;
     /**
      * 当前界面是否可见
      */
-    protected boolean isVisibleToUser;
+    public boolean isVisibleToUser;
     /**
      * 是否加载过数据
      */
-    protected boolean isDataInitiated;
+    public boolean isDataInitiated;
 
     @Override
     public void onAttach(Activity activity) {
@@ -91,63 +91,63 @@ public abstract class BaseFragment extends RxFragment {
     /**
      * 懒加载
      */
-    protected abstract void loadData();
+    public abstract void loadData();
 
-    protected void showLoadingPage(int mode) {
+    public void showLoadingPage(int mode) {
         if (mBaseActivity != null) {
             mBaseActivity.showLoadingPage(mode);
         }
     }
 
 
-    protected void showLoadingPage(int groupId, int mode) {
+    public void showLoadingPage(int groupId, int mode) {
         if (mBaseActivity != null) {
             mBaseActivity.showLoadingPage(groupId, mode);
         }
     }
 
-    protected void showLoadingPage(ViewGroup group, int mode) {
+    public void showLoadingPage(ViewGroup group, int mode) {
         if (mBaseActivity != null) {
             mBaseActivity.showLoadingPage(group, mode);
         }
     }
 
 
-    protected void onError() {
+    public void onError() {
         if (mBaseActivity != null) {
             mBaseActivity.onError();
         }
 
     }
 
-    protected void onError(String msg) {
+    public void onError(String msg) {
 
         if (mBaseActivity != null) {
             mBaseActivity.onError(msg);
         }
     }
 
-    protected void onError(LoadingPage.OnReloadCallBack callBack, String msg) {
+    public void onError(LoadingPage.OnReloadCallBack callBack, String msg) {
         if (mBaseActivity != null) {
             mBaseActivity.onError(callBack, msg);
         }
     }
 
-    protected void removeLoadingPage() {
+    public void removeLoadingPage() {
         if (mBaseActivity != null) {
             mBaseActivity.removeLoadingPage();
         }
     }
 
 
-    protected void addFragment(Class<? extends BaseFragment> zClass, int layoutId) {
+    public void addFragment(Class<? extends BaseFragment> zClass, int layoutId) {
         if (mBaseActivity != null) {
             mBaseActivity.addFragment(zClass, layoutId);
         }
     }
 
 
-    protected void closeActivity() {
+    public void closeActivity() {
 
         if (mBaseActivity != null) {
             mBaseActivity.finish();

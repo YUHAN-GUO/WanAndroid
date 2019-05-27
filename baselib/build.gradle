@@ -1,5 +1,7 @@
 apply plugin: 'com.android.library'
 apply from :'versions.gradle'
+// BaseUrl
+def BASE_URL = "https://www.wanandroid.com"
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -14,9 +16,23 @@ android {
 
     buildTypes {
         release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField 'String', 'ApiUrl', '"' + BASE_URL + '"'
+            buildConfigField 'boolean', 'isDebug', 'false'
+
+        }
+
+        debug {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField 'String', 'ApiUrl', '"' + BASE_URL + '"'
+            buildConfigField 'boolean', 'isDebug', 'true'
         }
+    }
+    compileOptions {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
     }
 
 }
@@ -25,7 +41,8 @@ dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
 //Glide
     api deps.glideX.glide
-    api 'com.android.support.constraint:constraint-layout:1.1.3'
+    api deps.glideX.glide_okhttps
+    api deps.glideX.glide_annotations
     annotationProcessor deps.glideX.glide_compiler
     //Rx
     api deps.rxJavaX.rxJava

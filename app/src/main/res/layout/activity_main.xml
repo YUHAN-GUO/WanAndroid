@@ -8,12 +8,38 @@
     android:fitsSystemWindows="true"
     tools:openDrawer="start">
 
-    <include
-        layout="@layout/app_bar_main"
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+
+        <FrameLayout
+            android:id="@+id/main_frameLayout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/main_bottomNavigationView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </FrameLayout>
+
+        <android.support.design.widget.BottomNavigationView
+            android:id="@+id/main_bottomNavigationView"
+            app:menu="@menu/activity_main_bottom"
+            app:labelVisibilityMode="labeled"
+            style="@style/Widget.Design.BottomNavigationView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/color_white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </android.support.constraint.ConstraintLayout>
+
 
     <android.support.design.widget.NavigationView
+        android:visibility="gone"
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
