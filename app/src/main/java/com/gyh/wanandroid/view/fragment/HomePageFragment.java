@@ -31,7 +31,7 @@ import cn.bingoogolapple.bgabanner.BGABanner;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class HomePageFragment extends BaseFragment implements HomePageViewModel.OnHomeDataListener {
+public class HomePageFragment extends BaseFragment {
 
 
     private FragmentHomePage3Binding bindView;
@@ -59,7 +59,7 @@ public class HomePageFragment extends BaseFragment implements HomePageViewModel.
     }
 
     private void initData() {
-        HomePageViewModel viewModel = new HomePageViewModel(this, this);
+        HomePageViewModel viewModel = new HomePageViewModel(bindView,this);
         bindView.setViewModel(viewModel);
 
     }
@@ -68,30 +68,4 @@ public class HomePageFragment extends BaseFragment implements HomePageViewModel.
     public void loadData() {
 
     }
-
-    @Override
-    public void onError(String msg) {
-        Logger.d("%s+++++++%s","guoyhonError",msg);
-    }
-
-    @Override
-    public void onArticle(ArticleDataBean data) {
-        Logger.d("%s+++++++%s","guoyhArticleDataBean",data.getDatas().get(0).getDesc());
-
-    }
-
-    @Override
-    public void onBanner(List<BannerDataBean> data) {
-        bindView.homePageBanner.setAdapter(new BGABanner.Adapter<ImageView,BannerDataBean>() {
-            @Override
-            public void fillBannerItem(BGABanner banner, ImageView itemView, @Nullable BannerDataBean model, int position) {
-                Glide.with(getActivity()).load(model.getImagePath()).into(itemView);
-            }
-
-
-        });
-        bindView.homePageBanner.setData(data,null);
-
-    }
-
 }

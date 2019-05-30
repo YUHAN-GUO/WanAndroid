@@ -295,7 +295,9 @@ public abstract class BaseActivity extends RxAppCompatActivity implements NetBro
         }
     }
 
-
+    public void finishAll(){
+        ActivityUtil.getInstance().exitSystem();
+    }
 
     /**
      * 获取网络类型

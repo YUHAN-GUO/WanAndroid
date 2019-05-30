@@ -3,12 +3,15 @@ package com.gyh.wanandroid.data.retrofit;
 import com.base.gyh.baselib.data.bean.HttpResult;
 import com.gyh.wanandroid.data.bean.ArticleDataBean;
 import com.gyh.wanandroid.data.bean.BannerDataBean;
+import com.gyh.wanandroid.data.bean.KnowledgeArticleBean;
+import com.gyh.wanandroid.data.bean.KnowledgeBean;
 
 import java.util.List;
 
 import io.reactivex.Observable;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 /*
  * created by taofu on 2018/11/27
@@ -28,6 +31,29 @@ public interface WanAndroidService {
      */
     @GET("article/list/{pageNo}/json")
     Observable<HttpResult<ArticleDataBean>> getArticlesData(@Path("pageNo") int num);
+
+    /**
+     * 体系
+     *
+     * @return
+     */
+    @GET("/tree/json")
+    Observable<HttpResult<List<KnowledgeBean>>> getKnowledgeData();
+
+    /**
+     * 体系详情
+     *
+     * @param pageNo 页码从0开始
+     * @param cid    从“/tree/json”获取
+     * @return
+     */
+    @GET("/article/list/{pageNo}/json")
+    Observable<HttpResult<KnowledgeArticleBean>> getKnowledgeArticles(@Path("pageNo") int pageNo, @Query("cid") int cid);
+//
+
+//    @GET("/project/tree/json")
+//    Observable<HttpResult<List<KnowledgeBean>>> getProjectsTree();
+
 //
 //    /***
 //     * 收藏文章
@@ -45,9 +71,7 @@ public interface WanAndroidService {
 //    @POST("lg/uncollect_originId/{id}/json")
 //    Observable<BaseBean<Object>> cancleCollectArticle(@Path("id") int id);
 //
-//    @GET("/article/list/{pageNo}/json")
-//    Observable<BaseBean<ArticleList>> getKnowledgeArticles(@Path("pageNo") int pageNo, @Query("cid") int cid);
-//
+
 //    @GET("/lg/collect/list/{pageNo}/json")
 //    Observable<BaseBean<ArticleList>> getCollections(@Path("pageNo") int pageNo);
 //
@@ -79,8 +103,7 @@ public interface WanAndroidService {
 //    @FormUrlEncoded
 //    Observable<BaseBean<LoginBean>> register(@Field("username") String userName, @Field("password") String password, @Field("repassword") String repssword);
 //
-//    @GET("/project/tree/json")
-//    Observable<BaseBean<List<ProjectCategory>>> getProjectsCategory();
+
 //
 //    @GET("/project/list/{pageNo}/json")
 //    Observable<BaseBean<ArticleList>> getProjectArticles(@Path("pageNo") int pageNo, @Query("cid") int cid);

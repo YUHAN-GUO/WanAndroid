@@ -70,7 +70,8 @@
                             android:layout_marginLeft="8dp"
                             android:layout_marginEnd="8dp"
                             android:layout_marginRight="8dp"
-                            android:text="Title"
+                            android:text="Wan Android"
+                            android:textAllCaps="false"
                             android:textColor="@color/color_white"
                             android:textSize="@dimen/sp_17"
                             app:layout_constraintBottom_toBottomOf="@+id/home_toolbar_back"
@@ -107,25 +108,23 @@
 
         </android.support.design.widget.AppBarLayout>
 
-                <com.scwang.smartrefresh.layout.SmartRefreshLayout
-                    android:id="@+id/home_refresh"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-                    <com.scwang.smartrefresh.header.BezierCircleHeader
+                    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+                        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                        android:id="@+id/home_refresh"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="match_parent"
+                        >
 
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/home_content"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
+                        <com.scwang.smartrefresh.header.BezierCircleHeader
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
 
-                    <com.scwang.smartrefresh.layout.footer.FalsifyFooter
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/home_content"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
 
     </android.support.design.widget.CoordinatorLayout>

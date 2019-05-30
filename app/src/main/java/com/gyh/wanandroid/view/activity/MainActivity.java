@@ -1,57 +1,60 @@
 package com.gyh.wanandroid.view.activity;
 
+import android.arch.lifecycle.Observer;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
+import android.support.v4.content.ContextCompat;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import com.base.gyh.baselib.base.BaseActivity;
 import com.gyh.wanandroid.R;
+import com.gyh.wanandroid.app.AppConstant;
 import com.gyh.wanandroid.view.fragment.HomePageFragment;
 import com.gyh.wanandroid.view.fragment.KnowledgeFragment;
 import com.gyh.wanandroid.view.fragment.NavigationFragment;
 import com.gyh.wanandroid.view.fragment.ProjectsFragment;
+import com.jeremyliao.liveeventbus.LiveEventBus;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private boolean isOpenDraw = false;
+    private DrawerLayout drawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         FrameLayout mFrameLayout = (FrameLayout) findViewById(R.id.main_frameLayout);
         BottomNavigationView mMainbottomNavigationView = (BottomNavigationView) findViewById(R.id.main_bottomNavigationView);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+
         navigationView.setNavigationItemSelectedListener(this);
+        addFragment(HomePageFragment.class, R.id.main_frameLayout);
         mMainbottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.homgpage:
-                        addFragment(HomePageFragment.class,R.id.main_frameLayout);
+                        addFragment(HomePageFragment.class, R.id.main_frameLayout);
                         return true;
                     case R.id.projets:
-                        addFragment(ProjectsFragment.class,R.id.main_frameLayout);
+                        addFragment(ProjectsFragment.class, R.id.main_frameLayout);
 
                         return true;
                     case R.id.knowledge:
-                        addFragment(KnowledgeFragment.class,R.id.main_frameLayout);
+                        addFragment(KnowledgeFragment.class, R.id.main_frameLayout);
 
                         return true;
                     case R.id.navigation:
-                        addFragment(NavigationFragment.class,R.id.main_frameLayout);
+                        addFragment(NavigationFragment.class, R.id.main_frameLayout);
 
                         return true;
                     default:
@@ -61,9 +64,16 @@ public class MainActivity extends BaseActivity
                 return false;
             }
         });
+        setListener();
+    }
 
-//        drawer.openDrawer(GravityCompat.START);
-
+    private void setListener() {
+        LiveEventBus.get().with(AppConstant.MAIN_FRAGMENT_BACK, int.class).observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(@Nullable Integer integer) {
+                drawer.openDrawer(GravityCompat.START);
+            }
+        });
     }
 
     @Override

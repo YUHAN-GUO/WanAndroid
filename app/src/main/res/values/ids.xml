@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="item_home_rlv_tv_niceDate" type="id" />
+    <item name="item_home_rlv_tv_author" type="id" />
+    <item name="item_home_rlv_img_collect" type="id" />
+    <item name="item_home_rlv_tv_title" type="id" />
+    <item name="item_home_rlv_tv_chapterName" type="id" />
+    <item name="home_toolbar_back" type="id" />
+    <item name="home_toolbar_menu" type="id" />
+    <item name="home_toolbar_title" type="id" />
+    <item name="item_knowledge_content" type="id" />
+    <item name="item_knowledge_title" type="id" />
+    <item name="item_knowledge_img" type="id" />
+</resources>

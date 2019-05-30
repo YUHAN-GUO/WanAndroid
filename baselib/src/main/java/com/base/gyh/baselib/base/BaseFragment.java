@@ -1,6 +1,7 @@
 package com.base.gyh.baselib.base;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -21,15 +22,15 @@ public abstract class BaseFragment extends RxFragment {
     /**
      * 是否初始化过布局
      */
-    public boolean isViewInitiated;
+    protected boolean isViewInitiated;
     /**
      * 当前界面是否可见
      */
-    public boolean isVisibleToUser;
+    protected boolean isVisibleToUser;
     /**
      * 是否加载过数据
      */
-    public boolean isDataInitiated;
+    protected boolean isDataInitiated;
 
     @Override
     public void onAttach(Activity activity) {
@@ -91,7 +92,7 @@ public abstract class BaseFragment extends RxFragment {
     /**
      * 懒加载
      */
-    public abstract void loadData();
+    protected abstract void loadData();
 
     public void showLoadingPage(int mode) {
         if (mBaseActivity != null) {
@@ -146,6 +147,20 @@ public abstract class BaseFragment extends RxFragment {
         }
     }
 
+    protected void startActivity(Class<? extends Activity> zClass,Bundle bundle){
+        if (mBaseActivity!=null){
+            mBaseActivity.startActivity(zClass,bundle);
+        }
+    }
+    public void startActivity(Class<? extends Activity> zClass){
+        if (mBaseActivity!=null){
+            mBaseActivity.startActivity(zClass);
+        }
+    }
+    public void startActivityForResult(Class<? extends Activity> zClass,int code){
+        startActivityForResult(new Intent(getContext(),zClass),code);
+
+    }
 
     public void closeActivity() {
 
