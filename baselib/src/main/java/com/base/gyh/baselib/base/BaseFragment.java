@@ -147,7 +147,7 @@ public abstract class BaseFragment extends RxFragment {
         }
     }
 
-    protected void startActivity(Class<? extends Activity> zClass,Bundle bundle){
+    public void startActivity(Class<? extends Activity> zClass,Bundle bundle){
         if (mBaseActivity!=null){
             mBaseActivity.startActivity(zClass,bundle);
         }

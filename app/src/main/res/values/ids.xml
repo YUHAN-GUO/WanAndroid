@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <item name="item_home_rlv_tv_niceDate" type="id" />
     <item name="item_home_rlv_tv_author" type="id" />
     <item name="item_home_rlv_img_collect" type="id" />
@@ -11,4 +11,11 @@
     <item name="item_knowledge_content" type="id" />
     <item name="item_knowledge_title" type="id" />
     <item name="item_knowledge_img" type="id" />
+    <item name="knowledge_article_mytoolbar" type="id" />
+    <item name="knowledge_article_tablayout" type="id" />
+    <item name="item_knowledge_childfragment_rlv_tv_niceDate" type="id" />
+    <item name="item_knowledge_childfragment_rlv_tv_author" type="id" />
+    <item name="item_knowledge_childfragment_rlv_img_collect" type="id" />
+    <item name="item_knowledge_childfragment_rlv_tv_title" type="id" />
+    <item name="item_knowledge_childfragment_rlv_tv_chapterName" type="id" />
 </resources>

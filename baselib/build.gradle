@@ -86,4 +86,8 @@ dependencies {
     api 'com.lxj:xpopup:1.7.4'
     //权限处理
     api 'com.qw:soulpermission:1.1.6'
+    //WebView
+    api 'com.just.agentweb:agentweb:4.0.3-beta' // (必选)
+    api 'com.lcodecorex:tkrefreshlayout:1.0.7'
+
 }

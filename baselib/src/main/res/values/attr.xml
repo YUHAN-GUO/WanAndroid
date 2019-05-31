@@ -2,18 +2,15 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <attr name="cpCancelTextSize" format="dimension|reference" />
     <attr name="cpCancelTextColor" format="color|reference" />
-
     <attr name="cpClearTextIcon" format="reference" />
     <attr name="cpSearchTextSize" format="dimension|reference" />
     <attr name="cpSearchTextColor" format="color|reference" />
     <attr name="cpSearchHintText" format="string|reference" />
     <attr name="cpSearchHintTextColor" format="color|reference" />
     <attr name="cpSearchCursorDrawable" format="reference" />
-
     <attr name="cpListItemTextSize" format="dimension|reference" />
     <attr name="cpListItemTextColor" format="color|reference" />
     <attr name="cpListItemHeight" format="dimension|reference"/>
-
     <attr name="cpEmptyIcon" format="reference" tools:ignore="MissingDefaultResource" />
     <attr name="cpEmptyIconWidth" format="dimension|reference"/>
     <attr name="cpEmptyIconHeight" format="dimension|reference"/>
@@ -38,4 +35,8 @@
     <attr name="cpOverlayTextSize" format="dimension|reference"/>
     <attr name="cpOverlayTextColor" format="color|reference"/>
     <attr name="cpOverlayBackground" format="color|reference"/>
+    <declare-styleable name="MyToolbar">
+        <attr name="isShowMenu" format="boolean"/>
+        <attr name="backIcon" format="integer"/>
+    </declare-styleable>
 </resources>

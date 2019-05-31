@@ -1,6 +1,7 @@
 package com.gyh.wanandroid.viewmodule;
 
 import android.databinding.ObservableBoolean;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,12 +18,14 @@ import com.base.gyh.baselib.data.remote.retrofit.HttpUtils;
 import com.base.gyh.baselib.utils.mylog.Logger;
 import com.base.gyh.baselib.widgets.view.LoadingPage;
 import com.bumptech.glide.Glide;
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.gyh.wanandroid.app.AppConstant;
 import com.gyh.wanandroid.data.bean.ArticleDataBean;
 import com.gyh.wanandroid.data.bean.BannerDataBean;
 import com.gyh.wanandroid.data.retrofit.DataService;
 import com.gyh.wanandroid.databinding.FragmentHomePage3Binding;
 import com.gyh.wanandroid.view.activity.MainActivity;
+import com.gyh.wanandroid.view.activity.WebActivity;
 import com.gyh.wanandroid.view.adapter.HomePageRlvAdapter;
 import com.gyh.wanandroid.view.fragment.HomePageFragment;
 import com.jeremyliao.liveeventbus.LiveEventBus;
@@ -49,6 +52,7 @@ public class HomePageViewModel {
     private FragmentHomePage3Binding binding;
     private HomePageRlvAdapter rlvAdapter;
     private List<ArticleDataBean.DatasBean> datasBeanList;
+    private String n;
 
     public HomePageViewModel(FragmentHomePage3Binding binding, BaseFragment rxFragment) {
         this.binding = binding;
@@ -153,12 +157,32 @@ public class HomePageViewModel {
     }
 
     private void refrashAndLoadMoreListener() {
+        binding.homePageBanner.setDelegate(new BGABanner.Delegate<ImageView, BannerDataBean>() {
+            @Override
+            public void onBannerItemClick(BGABanner banner, ImageView itemView, @Nullable BannerDataBean model, int position) {
+                String url = model.getUrl();
+                Bundle bundle = new Bundle();
+                bundle.putString("url",url);
+                rxFragment.startActivity(WebActivity.class,bundle);
+            }
+
+        });
         rlvAdapter.setOnCollectListener(new HomePageRlvAdapter.OnCollectListener() {
             @Override
             public void onCollectClick(int position, boolean isChecked) {
                 if (binding.homeContent.getScrollState() == RecyclerView.SCROLL_STATE_IDLE && (!binding.homeContent.isComputingLayout())) {
                     rlvAdapter.setCollect(position, isChecked);
                 }
+            }
+        });
+        rlvAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                List<ArticleDataBean.DatasBean> data = adapter.getData();
+                String link = data.get(position).getLink();
+                Bundle bundle = new Bundle();
+                bundle.putString("url",link);
+                rxFragment.startActivity(WebActivity.class,bundle);
             }
         });
         binding.homeRefresh.setOnRefreshLoadMoreListener(new OnRefreshLoadMoreListener() {

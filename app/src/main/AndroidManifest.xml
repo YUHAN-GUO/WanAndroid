@@ -23,6 +23,7 @@
         </activity>
         <activity android:name=".view.activity.MainActivity" />
         <activity android:name=".view.activity.KnowledgeArticleActivity"></activity>
+        <activity android:name=".view.activity.WebActivity"></activity>
     </application>
 
 </manifest>

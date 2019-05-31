@@ -1,5 +1,10 @@
 package com.gyh.wanandroid.data.bean;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,7 +29,7 @@ public class KnowledgeBean {
     private int parentChapterId;
     private boolean userControlSetTop;
     private int visible;
-    private List<ChildrenBean> children;
+    private ArrayList<ChildrenBean> children;
 
     public int getCourseId() {
         return courseId;
@@ -82,15 +87,15 @@ public class KnowledgeBean {
         this.visible = visible;
     }
 
-    public List<ChildrenBean> getChildren() {
+    public ArrayList<ChildrenBean> getChildren() {
         return children;
     }
 
-    public void setChildren(List<ChildrenBean> children) {
+    public void setChildren(ArrayList<ChildrenBean> children) {
         this.children = children;
     }
 
-    public static class ChildrenBean {
+    public static class ChildrenBean implements Parcelable {
         /**
          * children : []
          * courseId : 13
@@ -109,7 +114,6 @@ public class KnowledgeBean {
         private int parentChapterId;
         private boolean userControlSetTop;
         private int visible;
-        private List<?> children;
 
         public int getCourseId() {
             return courseId;
@@ -167,12 +171,45 @@ public class KnowledgeBean {
             this.visible = visible;
         }
 
-        public List<?> getChildren() {
-            return children;
+        @Override
+        public int describeContents() {
+            return 0;
         }
 
-        public void setChildren(List<?> children) {
-            this.children = children;
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(this.courseId);
+            dest.writeInt(this.id);
+            dest.writeString(this.name);
+            dest.writeInt(this.order);
+            dest.writeInt(this.parentChapterId);
+            dest.writeByte(this.userControlSetTop ? (byte) 1 : (byte) 0);
+            dest.writeInt(this.visible);
         }
+
+        public ChildrenBean() {
+        }
+
+        protected ChildrenBean(Parcel in) {
+            this.courseId = in.readInt();
+            this.id = in.readInt();
+            this.name = in.readString();
+            this.order = in.readInt();
+            this.parentChapterId = in.readInt();
+            this.userControlSetTop = in.readByte() != 0;
+            this.visible = in.readInt();
+        }
+
+        public static final Parcelable.Creator<ChildrenBean> CREATOR = new Parcelable.Creator<ChildrenBean>() {
+            @Override
+            public ChildrenBean createFromParcel(Parcel source) {
+                return new ChildrenBean(source);
+            }
+
+            @Override
+            public ChildrenBean[] newArray(int size) {
+                return new ChildrenBean[size];
+            }
+        };
     }
 }

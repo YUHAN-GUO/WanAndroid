@@ -4,6 +4,7 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.ViewModel;
 import android.content.Context;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
@@ -26,6 +27,7 @@ import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
 import com.trello.rxlifecycle2.components.support.RxFragment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -55,7 +57,11 @@ public class KnowledgeViewModel implements OnRefreshLoadMoreListener {
         rlvAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                rxFragment.startActivity(KnowledgeArticleActivity.class);
+                List<KnowledgeBean> data = adapter.getData();
+                ArrayList<KnowledgeBean.ChildrenBean> children = data.get(position).getChildren();
+                Bundle bundle = new Bundle();
+                bundle.putParcelableArrayList("tab",children);
+                rxFragment.startActivity(KnowledgeArticleActivity.class,bundle);
             }
         });
     }
