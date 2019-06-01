@@ -5,6 +5,8 @@ import com.gyh.wanandroid.data.bean.ArticleDataBean;
 import com.gyh.wanandroid.data.bean.BannerDataBean;
 import com.gyh.wanandroid.data.bean.KnowledgeArticleBean;
 import com.gyh.wanandroid.data.bean.KnowledgeBean;
+import com.gyh.wanandroid.data.bean.ProjectArticleBean;
+import com.gyh.wanandroid.data.bean.ProjectTreeBean;
 
 import java.util.List;
 
@@ -49,10 +51,24 @@ public interface WanAndroidService {
      */
     @GET("/article/list/{pageNo}/json")
     Observable<HttpResult<KnowledgeArticleBean>> getKnowledgeArticles(@Path("pageNo") int pageNo, @Query("cid") int cid);
-//
 
-//    @GET("/project/tree/json")
-//    Observable<HttpResult<List<KnowledgeBean>>> getProjectsTree();
+
+    /**
+     * Project tree
+     * @return
+     */
+    @GET("/project/tree/json")
+    Observable<HttpResult<List<ProjectTreeBean>>> getProjectsTree();
+
+
+    /**
+     * Project Article 页面
+     * @param pageNo
+     * @param cid
+     * @return
+     */
+    @GET("/project/list/{pageNo}/json")
+    Observable<HttpResult<ProjectArticleBean>> getProjectArticles(@Path("pageNo") int pageNo, @Query("cid") int cid);
 
 //
 //    /***
@@ -103,10 +119,4 @@ public interface WanAndroidService {
 //    @FormUrlEncoded
 //    Observable<BaseBean<LoginBean>> register(@Field("username") String userName, @Field("password") String password, @Field("repassword") String repssword);
 //
-
-//
-//    @GET("/project/list/{pageNo}/json")
-//    Observable<BaseBean<ArticleList>> getProjectArticles(@Path("pageNo") int pageNo, @Query("cid") int cid);
-
-
 }

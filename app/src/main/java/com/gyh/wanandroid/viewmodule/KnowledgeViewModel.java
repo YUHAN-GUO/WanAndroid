@@ -61,6 +61,7 @@ public class KnowledgeViewModel implements OnRefreshLoadMoreListener {
                 ArrayList<KnowledgeBean.ChildrenBean> children = data.get(position).getChildren();
                 Bundle bundle = new Bundle();
                 bundle.putParcelableArrayList("tab",children);
+                bundle.putString("title",data.get(position).getName());
                 rxFragment.startActivity(KnowledgeArticleActivity.class,bundle);
             }
         });

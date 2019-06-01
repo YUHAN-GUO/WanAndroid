@@ -6,21 +6,23 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.gyh.wanandroid.data.bean.KnowledgeBean;
+import com.gyh.wanandroid.data.bean.ProjectTreeBean;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Created by GUOYH on 2019/5/31.
+ * Created by GUOYH on 2019/6/1.
  */
-public class KnowledgeArticleViewPagerAdapter extends FragmentStatePagerAdapter {
+public class ProjectVpAdapter extends FragmentStatePagerAdapter {
     private ArrayList<Fragment> fragments;
 
-    public KnowledgeArticleViewPagerAdapter(FragmentManager fm,  ArrayList<Fragment> fragments) {
+    public ProjectVpAdapter(FragmentManager fm,  ArrayList<Fragment> fragments) {
         super(fm);
         this.fragments = fragments;
     }
 
-    public KnowledgeArticleViewPagerAdapter(FragmentManager fm) {
+    public ProjectVpAdapter(FragmentManager fm) {
         super(fm);
     }
 

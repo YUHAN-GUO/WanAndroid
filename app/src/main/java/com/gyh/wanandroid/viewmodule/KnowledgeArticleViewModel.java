@@ -34,16 +34,18 @@ public class KnowledgeArticleViewModel {
 
     private void initView() {
         ArrayList<Fragment> fragments = new ArrayList<>();
-        for (KnowledgeBean.ChildrenBean childrenBean : tab) {
+        String[] titles = new String[tab.size()];
+        for (int i = 0; i < tab.size(); i++) {
+            titles[i] = tab.get(i).getName();
             KnowledgeArticleChildFragment childFragment = new KnowledgeArticleChildFragment();
             Bundle bundle = new Bundle();
-            bundle.putInt("cid",childrenBean.getId());
+            bundle.putInt("cid",tab.get(i).getId());
             childFragment.setArguments(bundle);
             fragments.add(childFragment);
         }
-        KnowledgeArticleViewPagerAdapter pagerAdapter = new KnowledgeArticleViewPagerAdapter(activity.getSupportFragmentManager(), tab, fragments);
+        KnowledgeArticleViewPagerAdapter pagerAdapter = new KnowledgeArticleViewPagerAdapter(activity.getSupportFragmentManager(), fragments);
         binding.knowledgeArticleViewpager.setAdapter(pagerAdapter);
-        binding.knowledgeArticleTablayout.setupWithViewPager(binding.knowledgeArticleViewpager);
+        binding.knowledgeArticleTablayout.setViewPager(binding.knowledgeArticleViewpager,titles);
         binding.knowledgeArticleMytoolbar.setOnBreakOrMenuClickListener(new MyToolbar.OnBreakOrMenuClickListener() {
             @Override
             public void onClick(int type) {

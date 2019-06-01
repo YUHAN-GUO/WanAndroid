@@ -18,4 +18,11 @@
     <item name="item_knowledge_childfragment_rlv_img_collect" type="id" />
     <item name="item_knowledge_childfragment_rlv_tv_title" type="id" />
     <item name="item_knowledge_childfragment_rlv_tv_chapterName" type="id" />
+    <item name="item_project_child_rlv_img_collect" type="id" />
+    <item name="imageView2" type="id" />
+    <item name="item_project_child_rlv_tv_content" type="id" />
+    <item name="item_project_child_rlv_tv_niceDate" type="id" />
+    <item name="item_project_child_rlv_tv_author" type="id" />
+    <item name="item_project_child_rlv_tv_title" type="id" />
+    <item name="project_tablayout" type="id" />
 </resources>

@@ -1,14 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".view.fragment.ProjectsFragment">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <data>
+        <variable
+            name="projectViewModel"
+            type="com.gyh.wanandroid.viewmodule.ProjectViewModel"/>
+    </data>
+
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        tools:context=".view.fragment.ProjectsFragment">
 
-</FrameLayout>
+        <com.flyco.tablayout.SlidingTabLayout
+            android:id="@+id/project_tablayout"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_50"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tl_divider_color="@color/color_black"
+            app:tl_indicator_color="@color/color_blue"
+            app:tl_indicator_gravity="BOTTOM"
+            app:tl_indicator_height="@dimen/dp_2"
+            app:tl_indicator_style="NORMAL"
+            app:tl_indicator_width="@dimen/dp_30"
+            app:tl_textSelectColor="@color/color_black"
+            app:tl_textUnselectColor="@color/cp_color_gray" />
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/project_viewpager"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/project_tablayout" />
+    </android.support.constraint.ConstraintLayout>
+</layout>

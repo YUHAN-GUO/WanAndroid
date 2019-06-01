@@ -23,8 +23,10 @@ public class KnowledgeArticleActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ArrayList<KnowledgeBean.ChildrenBean> tab = getIntent().getParcelableArrayListExtra("tab");
+        String title = getIntent().getStringExtra("title");
         binding = DataBindingUtil.setContentView(this, R.layout.activity_knowledge_article);
         KnowledgeArticleViewModel viewModel = new KnowledgeArticleViewModel(binding, this,tab);
         binding.setViewModel(viewModel);
+        binding.knowledgeArticleMytoolbar.setTitleText(title);
     }
 }

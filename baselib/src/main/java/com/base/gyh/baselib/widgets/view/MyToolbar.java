@@ -18,12 +18,15 @@ public class MyToolbar extends Toolbar implements View.OnClickListener {
     public static final int BACK = 0x10;
     public static final int MENU = 0x20;
 
+    private Context context;
     private String text ="Title";
-
+    private boolean aBoolean;
 
     public  void setTitleText(String text){
         this.text = text;
+        init(context, aBoolean);
     }
+
     public MyToolbar(Context context) {
         this(context,null,0);
     }
@@ -34,8 +37,9 @@ public class MyToolbar extends Toolbar implements View.OnClickListener {
 
     public MyToolbar(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        this.context = context;
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.MyToolbar);
-        boolean aBoolean = typedArray.getBoolean(R.styleable.MyToolbar_isShowMenu, true);
+        aBoolean = typedArray.getBoolean(R.styleable.MyToolbar_isShowMenu, true);
         typedArray.recycle();
         init(context, aBoolean);
     }
