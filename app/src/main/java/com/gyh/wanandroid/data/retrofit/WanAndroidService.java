@@ -5,6 +5,7 @@ import com.gyh.wanandroid.data.bean.ArticleDataBean;
 import com.gyh.wanandroid.data.bean.BannerDataBean;
 import com.gyh.wanandroid.data.bean.KnowledgeArticleBean;
 import com.gyh.wanandroid.data.bean.KnowledgeBean;
+import com.gyh.wanandroid.data.bean.NavigationArticleBean;
 import com.gyh.wanandroid.data.bean.ProjectArticleBean;
 import com.gyh.wanandroid.data.bean.ProjectTreeBean;
 
@@ -55,6 +56,7 @@ public interface WanAndroidService {
 
     /**
      * Project tree
+     *
      * @return
      */
     @GET("/project/tree/json")
@@ -63,6 +65,7 @@ public interface WanAndroidService {
 
     /**
      * Project Article 页面
+     *
      * @param pageNo
      * @param cid
      * @return
@@ -70,7 +73,14 @@ public interface WanAndroidService {
     @GET("/project/list/{pageNo}/json")
     Observable<HttpResult<ProjectArticleBean>> getProjectArticles(@Path("pageNo") int pageNo, @Query("cid") int cid);
 
-//
+
+    /**
+     * Navigation Data
+     * @return
+     */
+    @GET("/navi/json")
+    Observable<HttpResult<List<NavigationArticleBean>>> getNavigationData();
+
 //    /***
 //     * 收藏文章
 //     * @param id
@@ -108,8 +118,7 @@ public interface WanAndroidService {
 //    @GET("/tree/json")
 //    Observable<BaseBean<List<KnowledgeBean>>> getKnowledgeData();
 //
-//    @GET("/navi/json")
-//    Observable<BaseBean<List<NavigationBean>>> getNavigationData();
+
 //
 //    @POST("/user/login")
 //    @FormUrlEncoded
