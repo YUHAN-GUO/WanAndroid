@@ -20,8 +20,8 @@ public class Logger {
     private static final String SIMPLE_PREFIX = "[(%s:%d)#%s()] ->  ";
     private static final String MORE_DETAIL_PREFIX = "at %s.%s(%s:%d)";
     private static final StringBuffer mMessageBuffer = new StringBuffer();
-    private static String PRIVATE_TAG = "diyitonghang";
-    private static String PUBLIC_TAG = "diyitonghang";
+    private static String PRIVATE_TAG = "WanAndroid";
+    private static String PUBLIC_TAG = "WanAndroid";
     private static boolean mDebugable = true;
     public  static boolean DEBUG_V = Log.isLoggable(PRIVATE_TAG, Log.VERBOSE);
     public  static boolean DEBUG_D = Log.isLoggable(PRIVATE_TAG, Log.DEBUG);

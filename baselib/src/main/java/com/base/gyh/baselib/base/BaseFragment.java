@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.base.gyh.baselib.widgets.view.LoadingPage;
 import com.trello.rxlifecycle2.components.support.RxFragment;
 
 /*
@@ -88,58 +87,10 @@ public abstract class BaseFragment extends RxFragment {
             isDataInitiated = true;
         }
     }
-
     /**
      * 懒加载
      */
     protected abstract void loadData();
-
-    public void showLoadingPage(int mode) {
-        if (mBaseActivity != null) {
-            mBaseActivity.showLoadingPage(mode);
-        }
-    }
-
-
-    public void showLoadingPage(int groupId, int mode) {
-        if (mBaseActivity != null) {
-            mBaseActivity.showLoadingPage(groupId, mode);
-        }
-    }
-
-    public void showLoadingPage(ViewGroup group, int mode) {
-        if (mBaseActivity != null) {
-            mBaseActivity.showLoadingPage(group, mode);
-        }
-    }
-
-
-    public void onError() {
-        if (mBaseActivity != null) {
-            mBaseActivity.onError();
-        }
-
-    }
-
-    public void onError(String msg) {
-
-        if (mBaseActivity != null) {
-            mBaseActivity.onError(msg);
-        }
-    }
-
-    public void onError(LoadingPage.OnReloadCallBack callBack, String msg) {
-        if (mBaseActivity != null) {
-            mBaseActivity.onError(callBack, msg);
-        }
-    }
-
-    public void removeLoadingPage() {
-        if (mBaseActivity != null) {
-            mBaseActivity.removeLoadingPage();
-        }
-    }
-
 
     public void addFragment(Class<? extends BaseFragment> zClass, int layoutId) {
         if (mBaseActivity != null) {
@@ -168,4 +119,5 @@ public abstract class BaseFragment extends RxFragment {
             mBaseActivity.finish();
         }
     }
+
 }

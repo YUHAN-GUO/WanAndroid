@@ -1,7 +1,6 @@
 package com.gyh.wanandroid.viewmodule;
 
 import android.os.Bundle;
-import android.service.autofill.Dataset;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
@@ -11,15 +10,14 @@ import com.base.gyh.baselib.annotation.LoadType;
 import com.base.gyh.baselib.base.BaseFragment;
 import com.base.gyh.baselib.base.IBaseHttpResultTypeCallBack;
 import com.base.gyh.baselib.data.remote.retrofit.HttpUtils;
-import com.base.gyh.baselib.utils.mylog.Logger;
-import com.base.gyh.baselib.widgets.view.LoadingPage;
+import com.base.gyh.baselib.widgets.netstatae.INetErrorView;
+import com.base.gyh.baselib.widgets.netstatae.NetStateLayout;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.gyh.wanandroid.data.bean.KnowledgeArticleBean;
 import com.gyh.wanandroid.data.retrofit.DataService;
 import com.gyh.wanandroid.databinding.FragmentKnowledgeArticleChildBinding;
 import com.gyh.wanandroid.view.activity.WebActivity;
 import com.gyh.wanandroid.view.adapter.KnowledgeArticleChildRlvAdapter;
-import com.gyh.wanandroid.view.fragment.KnowledgeArticleChildFragment;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
 
@@ -34,20 +32,30 @@ public class KnowledgeArticleChildViewModel implements OnRefreshLoadMoreListener
     private int cid;
     private int page = 0;
     private KnowledgeArticleChildRlvAdapter adapter;
-    private int sumItems =0;
 
     public KnowledgeArticleChildViewModel(FragmentKnowledgeArticleChildBinding binding, BaseFragment fragment, int cid) {
         this.binding = binding;
         this.fragment = fragment;
         this.cid = cid;
-        fragment.showLoadingPage(LoadingPage.MODE_ONLY_SHOW_LOGING);
-        binding.fragmentKnowledgeArticleChildSmart.setOnRefreshLoadMoreListener(this);
         getData(Constant.OnLoadType.frist);
+        setListener();
+    }
+
+    private void setListener() {
+        binding.fragmentKnowledgeArticleChildSmart.setOnRefreshLoadMoreListener(this);
+
+        binding.fragmentKnowledgeArticleStateLayout.setOnRetryClickListener(new INetErrorView.OnRetryClickListener() {
+            @Override
+            public void onRetryClicked() {
+                getData(Constant.OnLoadType.frist);
+            }
+        });
     }
 
     private void getData(@LoadType int type) {
         switch (type) {
             case Constant.OnLoadType.frist:
+                stateShow(NetStateLayout.CONTENT_STATE_SHOW_LOADING);
                 page = 0;
                 break;
             case Constant.OnLoadType.refresh:
@@ -63,19 +71,27 @@ public class KnowledgeArticleChildViewModel implements OnRefreshLoadMoreListener
             @Override
             public void onSuccess(KnowledgeArticleBean data, int type) {
                 initRlv(data, type);
+                stateShow(NetStateLayout.CONTENT_STATE_HIDE);
             }
 
             @Override
             public void onError(Throwable e) {
-                Logger.d("%s+++++++%s", "guoyh", e.getMessage());
-                fragment.removeLoadingPage();
+                stateShow(NetStateLayout.CONTENT_STATE_SHOW_NET_ERROR);
 
             }
         }, type);
     }
 
+    private void stateShow(int type) {
+        if (type==NetStateLayout.CONTENT_STATE_HIDE){
+            binding.fragmentKnowledgeArticleChildSmart.setVisibility(View.VISIBLE);
+        }else{
+            binding.fragmentKnowledgeArticleChildSmart.setVisibility(View.GONE);
+        }
+        binding.fragmentKnowledgeArticleStateLayout.setContentState(type);
+    }
+
     private void initRlv(KnowledgeArticleBean data, @LoadType int type) {
-        sumItems +=data.getDatas().size();
         if (adapter == null) {
             adapter = new KnowledgeArticleChildRlvAdapter(data.getDatas());
             binding.fragmentKnowledgeArticleChildRlv.setLayoutManager(new LinearLayoutManager(fragment.getContext()));
@@ -93,12 +109,10 @@ public class KnowledgeArticleChildViewModel implements OnRefreshLoadMoreListener
         }
         switch (type) {
             case Constant.OnLoadType.frist:
-                fragment.removeLoadingPage();
                 adapter.setNewData(data.getDatas());
                 break;
 
             case Constant.OnLoadType.refresh:
-                sumItems = 0;
                 adapter.setNewData(data.getDatas());
                 binding.fragmentKnowledgeArticleChildSmart.finishRefresh();
                 break;

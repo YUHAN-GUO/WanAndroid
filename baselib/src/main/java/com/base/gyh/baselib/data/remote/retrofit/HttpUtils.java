@@ -124,6 +124,15 @@ public class HttpUtils {
                     }
                 });
     }
+
+    /**
+     *
+     * @param mObservable
+     * @param rxFragment
+     * @param callBack
+     * @param type  在判断是加载更多还是刷新亦或者是第一次加载 必须传入 Constant.LoadType 下的参数
+     * @param <T>
+     */
     @SuppressLint("CheckResult")
     public static <T> void obserableUtils(Observable<HttpResult<T>> mObservable, RxFragment rxFragment, final IBaseHttpResultTypeCallBack<T> callBack,@LoadType int type) {
         mObservable.flatMap(new Function<HttpResult<T>, ObservableSource<T>>() {
@@ -171,6 +180,14 @@ public class HttpUtils {
                 });
     }
 
+    /**
+     *
+     * @param mObservable
+     * @param rxActivity
+     * @param callBack
+     * @param type  在判断是加载更多还是刷新亦或者是第一次加载 必须传入 Constant.LoadType 下的参数
+     * @param <T>
+     */
     public static  <T> void obserableUtils(Observable<HttpResult<T>> mObservable, RxAppCompatActivity rxActivity, IBaseHttpResultTypeCallBack<T> callBack,@LoadType int type) {
         mObservable.flatMap(new Function<HttpResult<T>, ObservableSource<T>>() {
             @Override

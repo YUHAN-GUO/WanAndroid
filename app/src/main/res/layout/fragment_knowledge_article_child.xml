@@ -8,7 +8,8 @@
             type="com.gyh.wanandroid.viewmodule.KnowledgeArticleChildViewModel"/>
     </data>
 
-    <FrameLayout
+    <com.base.gyh.baselib.widgets.netstatae.NetStateLayout
+        android:id="@+id/fragment_knowledge_article_stateLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".view.fragment.KnowledgeArticleChildFragment">
@@ -29,5 +30,5 @@
             android:layout_height="wrap_content"/>
         </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
-    </FrameLayout>
+    </com.base.gyh.baselib.widgets.netstatae.NetStateLayout>
 </layout>

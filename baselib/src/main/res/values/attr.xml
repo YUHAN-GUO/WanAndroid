@@ -39,4 +39,9 @@
         <attr name="isShowMenu" format="boolean"/>
         <attr name="backIcon" format="integer"/>
     </declare-styleable>
+    <declare-styleable name="NetStateLayout">
+        <attr name="net_error" format="string" />
+        <attr name="net_loading" format="string" />
+        <attr name="content_id" format="integer"/>
+    </declare-styleable>
 </resources>

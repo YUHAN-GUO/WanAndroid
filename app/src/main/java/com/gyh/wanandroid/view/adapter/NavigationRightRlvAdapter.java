@@ -53,7 +53,6 @@ public class NavigationRightRlvAdapter extends BaseQuickAdapter<NavigationArticl
         flexboxLayoutManager.setAlignItems(AlignItems.STRETCH);
         flexboxLayoutManager.setJustifyContent(JustifyContent.FLEX_START);
         NavigationRightChildRlvAdapter childRlvAdapter = new NavigationRightChildRlvAdapter(item.getArticles());
-
         bind.itemNavigationRightRlv.setLayoutManager(flexboxLayoutManager);
         bind.itemNavigationRightRlv.setAdapter(childRlvAdapter);
         childRlvAdapter.setOnItemClickListener(new OnItemClickListener() {

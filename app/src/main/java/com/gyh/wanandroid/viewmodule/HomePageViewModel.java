@@ -15,8 +15,7 @@ import com.base.gyh.baselib.base.BaseFragment;
 import com.base.gyh.baselib.base.IBaseHttpResultCallBack;
 import com.base.gyh.baselib.base.IBaseHttpResultTypeCallBack;
 import com.base.gyh.baselib.data.remote.retrofit.HttpUtils;
-import com.base.gyh.baselib.utils.mylog.Logger;
-import com.base.gyh.baselib.widgets.view.LoadingPage;
+import com.base.gyh.baselib.widgets.netstatae.INetErrorView;
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.gyh.wanandroid.app.AppConstant;
@@ -24,21 +23,21 @@ import com.gyh.wanandroid.data.bean.ArticleDataBean;
 import com.gyh.wanandroid.data.bean.BannerDataBean;
 import com.gyh.wanandroid.data.retrofit.DataService;
 import com.gyh.wanandroid.databinding.FragmentHomePage3Binding;
-import com.gyh.wanandroid.view.activity.MainActivity;
 import com.gyh.wanandroid.view.activity.WebActivity;
 import com.gyh.wanandroid.view.adapter.HomePageRlvAdapter;
-import com.gyh.wanandroid.view.fragment.HomePageFragment;
 import com.jeremyliao.liveeventbus.LiveEventBus;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
-import com.scwang.smartrefresh.layout.footer.BallPulseFooter;
 import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
-import com.trello.rxlifecycle2.components.support.RxFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.bingoogolapple.bgabanner.BGABanner;
+
+import static com.base.gyh.baselib.widgets.netstatae.NetStateLayout.CONTENT_STATE_HIDE;
+import static com.base.gyh.baselib.widgets.netstatae.NetStateLayout.CONTENT_STATE_SHOW_LOADING;
+import static com.base.gyh.baselib.widgets.netstatae.NetStateLayout.CONTENT_STATE_SHOW_NET_ERROR;
 
 /**
  * Created by GUOYH on 2019/5/25.
@@ -58,7 +57,7 @@ public class HomePageViewModel {
         this.binding = binding;
         this.rxFragment = rxFragment;
         binding.homeContent.setLayoutManager(new LinearLayoutManager(rxFragment.getContext()));
-        rlvAdapter=new HomePageRlvAdapter(datasBeanList);
+        rlvAdapter = new HomePageRlvAdapter(datasBeanList);
         binding.homeContent.setAdapter(rlvAdapter);
         binding.homeRefresh.setRefreshFooter(new ClassicsFooter(rxFragment.getContext()));
         binding.homeRefresh.setEnableHeaderTranslationContent(true);
@@ -67,6 +66,12 @@ public class HomePageViewModel {
     }
 
     private void setListener() {
+        binding.homePageState.setOnRetryClickListener(new INetErrorView.OnRetryClickListener() {
+            @Override
+            public void onRetryClicked() {
+                getHomeData();
+            }
+        });
         binding.homeToolbarBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,6 +82,7 @@ public class HomePageViewModel {
     }
 
     public void getHomeData() {
+        stateShow(CONTENT_STATE_SHOW_LOADING);
         getArticel(Constant.OnLoadType.frist);
         getBanner();
     }
@@ -98,41 +104,51 @@ public class HomePageViewModel {
         HttpUtils.obserableUtils(DataService.getService().getArticlesData(page), rxFragment, new IBaseHttpResultTypeCallBack<ArticleDataBean>() {
             @Override
             public void onSuccess(ArticleDataBean data, int type) {
-                rxFragment.removeLoadingPage();
-                initRlv(data,type);
+                initRlv(data, type);
+                binding.homeContentView.setVisibility(View.VISIBLE);
+                stateShow(CONTENT_STATE_HIDE);
             }
 
             @Override
             public void onError(Throwable e) {
-                rxFragment.removeLoadingPage();
+                binding.homeContentView.setVisibility(View.GONE);
 
+                stateShow(CONTENT_STATE_SHOW_NET_ERROR);
             }
-        },type);
+        }, type);
     }
 
     private void getBanner() {
-        rxFragment.showLoadingPage(LoadingPage.MODE_ONLY_SHOW_LOGING);
         HttpUtils.obserableUtils(DataService.getService().getHomeBannerData(), rxFragment, new IBaseHttpResultCallBack<List<BannerDataBean>>() {
             @Override
             public void onSuccess(List<BannerDataBean> data) {
                 mBannerIsSuccess.set(true);
-                rxFragment.removeLoadingPage();
+                stateShow(CONTENT_STATE_HIDE);
                 initBanner(data);
+                binding.homeContentView.setVisibility(View.VISIBLE);
+
             }
 
             @Override
             public void onError(Throwable e) {
-                rxFragment.removeLoadingPage();
+                binding.homeContentView.setVisibility(View.GONE);
+                stateShow(CONTENT_STATE_SHOW_NET_ERROR);
+
             }
         });
     }
 
-    private void initRlv(ArticleDataBean data,int type) {
-        if (datasBeanList==null){
+    private void stateShow(int type) {
+
+        binding.homePageState.setContentState(type);
+    }
+
+    private void initRlv(ArticleDataBean data, int type) {
+        if (datasBeanList == null) {
             datasBeanList = new ArrayList<>();
         }
         List<ArticleDataBean.DatasBean> datas = data.getDatas();
-        if (rlvAdapter==null){
+        if (rlvAdapter == null) {
             rlvAdapter = new HomePageRlvAdapter(datasBeanList);
         }
         switch (type) {
@@ -162,8 +178,8 @@ public class HomePageViewModel {
             public void onBannerItemClick(BGABanner banner, ImageView itemView, @Nullable BannerDataBean model, int position) {
                 String url = model.getUrl();
                 Bundle bundle = new Bundle();
-                bundle.putString("url",url);
-                rxFragment.startActivity(WebActivity.class,bundle);
+                bundle.putString("url", url);
+                rxFragment.startActivity(WebActivity.class, bundle);
             }
 
         });
@@ -181,8 +197,8 @@ public class HomePageViewModel {
                 List<ArticleDataBean.DatasBean> data = adapter.getData();
                 String link = data.get(position).getLink();
                 Bundle bundle = new Bundle();
-                bundle.putString("url",link);
-                rxFragment.startActivity(WebActivity.class,bundle);
+                bundle.putString("url", link);
+                rxFragment.startActivity(WebActivity.class, bundle);
             }
         });
         binding.homeRefresh.setOnRefreshLoadMoreListener(new OnRefreshLoadMoreListener() {

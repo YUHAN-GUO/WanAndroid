@@ -59,8 +59,14 @@ public class BaseDataService {
         }
         return mRetrofitService;
     }
-
-
-
-
 }
+/**
+ * 使用创建一个类 WanAndroidService 是app下的 可以参考 package com.base.gyh.baselib.data.remote.retrofit;
+ * 注意不是lib下的需要自己在app下创建
+ * public class DataService {
+ *
+ *     public static WanAndroidService getService(){
+ *         return  (WanAndroidService) BaseDataService.getService(WanAndroidService.class);
+ *     }
+ * }
+ */

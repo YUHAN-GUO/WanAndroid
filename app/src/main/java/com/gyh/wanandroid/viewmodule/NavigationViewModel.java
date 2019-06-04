@@ -8,6 +8,8 @@ import android.view.View;
 import com.base.gyh.baselib.base.BaseFragment;
 import com.base.gyh.baselib.base.IBaseHttpResultCallBack;
 import com.base.gyh.baselib.data.remote.retrofit.HttpUtils;
+import com.base.gyh.baselib.widgets.netstatae.INetErrorView;
+import com.base.gyh.baselib.widgets.netstatae.NetStateLayout;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.gyh.wanandroid.data.bean.NavigationArticleBean;
@@ -33,17 +35,38 @@ public class NavigationViewModel {
         this.binding = binding;
         this.fragment = fragment;
         getData();
+        setListener();
     }
 
+    private void setListener() {
+        binding.navigationStateLayout.setOnRetryClickListener(new INetErrorView.OnRetryClickListener() {
+            @Override
+            public void onRetryClicked() {
+                getData();
+            }
+        });
+    }
+
+    private void stateShow(int type) {
+        if (type==NetStateLayout.CONTENT_STATE_HIDE){
+            binding.navigationContent.setVisibility(View.VISIBLE);
+        }else{
+            binding.navigationContent.setVisibility(View.GONE);
+        }
+        binding.navigationStateLayout.setContentState(type);
+    }
     private void getData() {
+        stateShow(NetStateLayout.CONTENT_STATE_SHOW_LOADING);
         HttpUtils.obserableUtils(DataService.getService().getNavigationData(), fragment, new IBaseHttpResultCallBack<List<NavigationArticleBean>>() {
             @Override
             public void onSuccess(List<NavigationArticleBean> data) {
                 initRlv(data);
+                stateShow(NetStateLayout.CONTENT_STATE_HIDE);
             }
 
             @Override
             public void onError(Throwable e) {
+                stateShow(NetStateLayout.CONTENT_STATE_SHOW_NET_ERROR);
 
             }
         });
@@ -62,15 +85,6 @@ public class NavigationViewModel {
         binding.navigationRightRlv.setLayoutManager(new LinearLayoutManager(fragment.getContext()));
         binding.navigationRightRlv.setAdapter(rightRlvAdapter);
 
-
-//        rightRlvAdapter.SetOnRrightChildTvOnClickListener(new NavigationRightRlvAdapter.SetOnRrightChildTvOnClickListener() {
-//            @Override
-//            public void onClick(NavigationArticleBean.ArticlesBean bean) {
-//                Bundle bundle = new Bundle();
-//                bundle.putString("url",bean.getLink());
-//                fragment.startActivity(WebActivity.class,bundle);
-//            }
-//        });
         binding.navigationRightRlv.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {

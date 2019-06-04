@@ -90,4 +90,5 @@ dependencies {
     api 'com.just.agentweb:agentweb:4.0.3-beta' // (必选)
     api 'com.lcodecorex:tkrefreshlayout:1.0.7'
 
+    api  'cn.yc:YCStateLib:1.1.6'
 }

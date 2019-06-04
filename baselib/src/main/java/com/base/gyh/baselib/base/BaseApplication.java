@@ -14,6 +14,8 @@ public class BaseApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+
         AutoSharedPreferenceConfig.getInstance().init(this);
         //
         //LiveEvent配置

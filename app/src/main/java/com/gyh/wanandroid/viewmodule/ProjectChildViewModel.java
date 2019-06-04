@@ -10,6 +10,7 @@ import com.base.gyh.baselib.annotation.LoadType;
 import com.base.gyh.baselib.base.BaseFragment;
 import com.base.gyh.baselib.base.IBaseHttpResultTypeCallBack;
 import com.base.gyh.baselib.data.remote.retrofit.HttpUtils;
+import com.base.gyh.baselib.widgets.netstatae.NetStateLayout;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.gyh.wanandroid.data.bean.KnowledgeArticleBean;
 import com.gyh.wanandroid.data.bean.ProjectArticleBean;
@@ -28,23 +29,30 @@ import java.util.List;
  */
 public class ProjectChildViewModel implements OnRefreshLoadMoreListener, BaseQuickAdapter.OnItemClickListener {
     private FragmentProjectArticleChildBinding binding;
-    private BaseFragment fragment;
+    private ProjectArticleChildFragment fragment;
     private int id;
     private int page = 0;
     private ProjectChildRlvAdapter adapter;
 
-    public ProjectChildViewModel(FragmentProjectArticleChildBinding binding, BaseFragment fragment, int id) {
+    public ProjectChildViewModel(FragmentProjectArticleChildBinding binding, ProjectArticleChildFragment fragment, int id) {
         this.binding = binding;
         this.fragment = fragment;
         this.id = id;
         binding.projectChildSmart.setOnRefreshLoadMoreListener(this);
         getData(Constant.OnLoadType.frist);
     }
-
+    private void stateShow(int type) {
+        if (type==NetStateLayout.CONTENT_STATE_HIDE){
+            binding.projectChildContent.setVisibility(View.VISIBLE);
+        }else{
+            binding.projectChildContent.setVisibility(View.GONE);
+        }
+        binding.projectChildStateLayout.setContentState(type);
+    }
     private void getData(@LoadType int type) {
         switch (type) {
-
             case Constant.OnLoadType.frist:
+                stateShow(NetStateLayout.CONTENT_STATE_SHOW_LOADING);
                 page = 0;
                 break;
             case Constant.OnLoadType.loadMore:
@@ -59,11 +67,14 @@ public class ProjectChildViewModel implements OnRefreshLoadMoreListener, BaseQui
         HttpUtils.obserableUtils(DataService.getService().getProjectArticles(page, id), fragment, new IBaseHttpResultTypeCallBack<ProjectArticleBean>() {
             @Override
             public void onSuccess(ProjectArticleBean data, int type) {
+                stateShow(NetStateLayout.CONTENT_STATE_HIDE);
                 initRlv(data,type);
+
             }
 
             @Override
             public void onError(Throwable e) {
+                stateShow(NetStateLayout.CONTENT_STATE_SHOW_NET_ERROR);
 
             }
         },type);
@@ -78,7 +89,6 @@ public class ProjectChildViewModel implements OnRefreshLoadMoreListener, BaseQui
         }
         switch (type) {
             case Constant.OnLoadType.frist:
-                fragment.removeLoadingPage();
                 break;
             case Constant.OnLoadType.loadMore:
                 if (data.getCurPage()>=data.getPageCount()){

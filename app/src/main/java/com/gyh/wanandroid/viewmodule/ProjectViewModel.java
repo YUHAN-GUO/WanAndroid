@@ -2,12 +2,15 @@ package com.gyh.wanandroid.viewmodule;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.View;
 import android.widget.Toast;
 
 import com.base.gyh.baselib.base.BaseFragment;
 import com.base.gyh.baselib.base.IBaseHttpResultCallBack;
 import com.base.gyh.baselib.data.remote.retrofit.HttpUtils;
 import com.base.gyh.baselib.utils.mylog.Logger;
+import com.base.gyh.baselib.widgets.netstatae.INetErrorView;
+import com.base.gyh.baselib.widgets.netstatae.NetStateLayout;
 import com.gyh.wanandroid.data.bean.ProjectTreeBean;
 import com.gyh.wanandroid.data.retrofit.DataService;
 import com.gyh.wanandroid.databinding.FragmentProjectsBinding;
@@ -29,21 +32,40 @@ public class ProjectViewModel {
     public ProjectViewModel(FragmentProjectsBinding binding, BaseFragment fragment) {
         this.binding = binding;
         this.fragment = fragment;
-
         getData();
+        setListener();
     }
 
+    private void setListener() {
+        binding.projectStateLayout.setOnRetryClickListener(new INetErrorView.OnRetryClickListener() {
+            @Override
+            public void onRetryClicked() {
+                getData();
+            }
+        });
+    }
+
+    private void stateShow(int type) {
+        if (type==NetStateLayout.CONTENT_STATE_HIDE){
+            binding.projectContentView.setVisibility(View.VISIBLE);
+        }else{
+            binding.projectContentView.setVisibility(View.GONE);
+        }
+        binding.projectStateLayout.setContentState(type);
+    }
     private void getData() {
+        stateShow(NetStateLayout.CONTENT_STATE_SHOW_LOADING);
         HttpUtils.obserableUtils(DataService.getService().getProjectsTree(), fragment, new IBaseHttpResultCallBack<List<ProjectTreeBean>>() {
             @Override
             public void onSuccess(List<ProjectTreeBean> data) {
+                stateShow(NetStateLayout.CONTENT_STATE_HIDE);
                 initTab(data);
             }
 
             @Override
             public void onError(Throwable e) {
-                Toast.makeText(fragment.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                Logger.d("%s++++++++%s","guoyh",e.getMessage());
+                stateShow(NetStateLayout.CONTENT_STATE_SHOW_NET_ERROR);
+
             }
         });
     }

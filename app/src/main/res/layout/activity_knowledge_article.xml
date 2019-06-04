@@ -4,48 +4,52 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewModel"
-            type="com.gyh.wanandroid.viewmodule.KnowledgeArticleViewModel"/>
+            type="com.gyh.wanandroid.viewmodule.KnowledgeArticleViewModel" />
     </data>
 
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".view.activity.KnowledgeArticleActivity">
 
-        <com.base.gyh.baselib.widgets.view.MyToolbar
-            android:id="@+id/knowledge_article_mytoolbar"
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/knowledge_article_content"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:contentInsetStart="@dimen/dp_0"
+            android:layout_height="match_parent"
+            tools:context=".view.activity.KnowledgeArticleActivity">
 
-            app:isShowMenu="false" />
+            <com.base.gyh.baselib.widgets.view.MyToolbar
+                android:id="@+id/knowledge_article_mytoolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:contentInsetStart="@dimen/dp_0"
 
-        <com.flyco.tablayout.SlidingTabLayout
-            android:id="@+id/knowledge_article_tablayout"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_50"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/knowledge_article_mytoolbar"
-            app:tl_divider_color="@color/color_black"
-            app:tl_indicator_color="@color/color_blue"
-            app:tl_indicator_gravity="BOTTOM"
-            app:tl_indicator_height="@dimen/dp_2"
-            app:tl_indicator_style="NORMAL"
-            app:tl_indicator_width="@dimen/dp_30"
-            app:tl_textSelectColor="@color/color_black"
-            app:tl_textUnselectColor="@color/cp_color_gray" />
+                app:isShowMenu="false" />
 
-        <android.support.v4.view.ViewPager
-            android:id="@+id/knowledge_article_viewpager"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/knowledge_article_tablayout" />
+            <com.flyco.tablayout.SlidingTabLayout
+                android:id="@+id/knowledge_article_tablayout"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_50"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/knowledge_article_mytoolbar"
+                app:tl_divider_color="@color/color_black"
+                app:tl_indicator_color="@color/color_blue"
+                app:tl_indicator_gravity="BOTTOM"
+                app:tl_indicator_height="@dimen/dp_2"
+                app:tl_indicator_style="NORMAL"
+                app:tl_indicator_width="@dimen/dp_30"
+                app:tl_textSelectColor="@color/color_black"
+                app:tl_textUnselectColor="@color/cp_color_gray" />
 
-    </android.support.constraint.ConstraintLayout>
+            <android.support.v4.view.ViewPager
+                android:id="@+id/knowledge_article_viewpager"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/knowledge_article_tablayout" />
+
+        </android.support.constraint.ConstraintLayout>
+
 </layout>

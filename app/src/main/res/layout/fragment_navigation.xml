@@ -3,18 +3,20 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="navigationViewModel"
-            type="com.gyh.wanandroid.viewmodule.NavigationViewModel"/>
+            type="com.gyh.wanandroid.viewmodule.NavigationViewModel" />
 
     </data>
 
-    <FrameLayout
+    <com.base.gyh.baselib.widgets.netstatae.NetStateLayout
+        android:id="@+id/navigation_stateLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".view.fragment.NavigationFragment">
+        android:layout_height="match_parent">
 
         <LinearLayout
+            android:id="@+id/navigation_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -41,6 +43,5 @@
                 android:background="@color/white" />
 
         </LinearLayout>
-
-    </FrameLayout>
+    </com.base.gyh.baselib.widgets.netstatae.NetStateLayout>
 </layout>
