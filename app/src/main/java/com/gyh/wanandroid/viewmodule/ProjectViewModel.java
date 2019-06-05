@@ -48,7 +48,7 @@ public class ProjectViewModel {
     private void stateShow(int type) {
         if (type==NetStateLayout.CONTENT_STATE_HIDE){
             binding.projectContentView.setVisibility(View.VISIBLE);
-        }else{
+        }else if (type==NetStateLayout.CONTENT_STATE_SHOW_NET_ERROR){
             binding.projectContentView.setVisibility(View.GONE);
         }
         binding.projectStateLayout.setContentState(type);

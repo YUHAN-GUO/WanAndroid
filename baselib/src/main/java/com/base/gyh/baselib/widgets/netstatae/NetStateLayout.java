@@ -51,6 +51,7 @@ public class NetStateLayout extends FrameLayout {
         }
         this.mNetErrorView = netErrorView;
         addView(netErrorView.getView(getContext()));
+        mNetErrorView.hide();
     }
 
 
@@ -75,6 +76,7 @@ public class NetStateLayout extends FrameLayout {
         }
         this.mNetLoadingView = netLoadingView;
         addView(netLoadingView.getView(getContext()));
+        mNetLoadingView.hide();
     }
 
 

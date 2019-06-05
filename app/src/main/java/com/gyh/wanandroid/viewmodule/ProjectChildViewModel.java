@@ -44,7 +44,7 @@ public class ProjectChildViewModel implements OnRefreshLoadMoreListener, BaseQui
     private void stateShow(int type) {
         if (type==NetStateLayout.CONTENT_STATE_HIDE){
             binding.projectChildContent.setVisibility(View.VISIBLE);
-        }else{
+        }else if (type==NetStateLayout.CONTENT_STATE_SHOW_NET_ERROR){
             binding.projectChildContent.setVisibility(View.GONE);
         }
         binding.projectChildStateLayout.setContentState(type);

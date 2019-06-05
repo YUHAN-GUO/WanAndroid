@@ -5,6 +5,7 @@ import com.gyh.wanandroid.data.bean.ArticleDataBean;
 import com.gyh.wanandroid.data.bean.BannerDataBean;
 import com.gyh.wanandroid.data.bean.KnowledgeArticleBean;
 import com.gyh.wanandroid.data.bean.KnowledgeBean;
+import com.gyh.wanandroid.data.bean.LoginBean;
 import com.gyh.wanandroid.data.bean.NavigationArticleBean;
 import com.gyh.wanandroid.data.bean.ProjectArticleBean;
 import com.gyh.wanandroid.data.bean.ProjectTreeBean;
@@ -12,7 +13,10 @@ import com.gyh.wanandroid.data.bean.ProjectTreeBean;
 import java.util.List;
 
 import io.reactivex.Observable;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -20,6 +24,29 @@ import retrofit2.http.Query;
  * created by taofu on 2018/11/27
  **/
 public interface WanAndroidService {
+
+
+    /**
+     * 登录
+     * @param userName
+     * @param password
+     * @return
+     */
+    @POST("/user/login")
+    @FormUrlEncoded
+    Observable<HttpResult<LoginBean>> login(@Field("username") String userName, @Field("password") String password);
+
+    /**
+     * 注册
+     * @param userName
+     * @param password
+     * @param repssword
+     * @return
+     */
+    @POST("/user/register")
+    @FormUrlEncoded
+    Observable<HttpResult<LoginBean>> register(@Field("username") String userName, @Field("password") String password, @Field("repassword") String repssword);
+
 
     /***
      * 获取首页banner数据
@@ -119,13 +146,5 @@ public interface WanAndroidService {
 //    Observable<BaseBean<List<KnowledgeBean>>> getKnowledgeData();
 //
 
-//
-//    @POST("/user/login")
-//    @FormUrlEncoded
-//    Observable<BaseBean<LoginBean>> login(@Field("username") String userName, @Field("password") String password);
-//
-//    @POST("/user/register")
-//    @FormUrlEncoded
-//    Observable<BaseBean<LoginBean>> register(@Field("username") String userName, @Field("password") String password, @Field("repassword") String repssword);
-//
+
 }

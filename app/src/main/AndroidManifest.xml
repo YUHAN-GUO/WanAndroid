@@ -22,8 +22,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".view.activity.MainActivity" />
-        <activity android:name=".view.activity.KnowledgeArticleActivity"></activity>
-        <activity android:name=".view.activity.WebActivity"></activity>
+        <activity android:name=".view.activity.KnowledgeArticleActivity" />
+        <activity android:name=".view.activity.WebActivity" />
+        <activity android:name=".view.activity.LoginAndRegisterActivity"></activity>
     </application>
 
 </manifest>

@@ -85,7 +85,7 @@ public class KnowledgeArticleChildViewModel implements OnRefreshLoadMoreListener
     private void stateShow(int type) {
         if (type==NetStateLayout.CONTENT_STATE_HIDE){
             binding.fragmentKnowledgeArticleChildSmart.setVisibility(View.VISIBLE);
-        }else{
+        }else if (type==NetStateLayout.CONTENT_STATE_SHOW_NET_ERROR){
             binding.fragmentKnowledgeArticleChildSmart.setVisibility(View.GONE);
         }
         binding.fragmentKnowledgeArticleStateLayout.setContentState(type);

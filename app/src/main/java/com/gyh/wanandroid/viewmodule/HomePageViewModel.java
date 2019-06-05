@@ -139,7 +139,6 @@ public class HomePageViewModel {
     }
 
     private void stateShow(int type) {
-
         binding.homePageState.setContentState(type);
     }
 

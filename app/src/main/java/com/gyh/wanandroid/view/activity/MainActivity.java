@@ -10,9 +10,12 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.base.gyh.baselib.base.BaseActivity;
+import com.base.gyh.baselib.widgets.view.ZQImageViewRoundOval;
 import com.gyh.wanandroid.R;
 import com.gyh.wanandroid.app.AppConstant;
 import com.gyh.wanandroid.view.fragment.HomePageFragment;
@@ -22,7 +25,7 @@ import com.gyh.wanandroid.view.fragment.ProjectsFragment;
 import com.jeremyliao.liveeventbus.LiveEventBus;
 
 public class MainActivity extends BaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
     private boolean isOpenDraw = false;
     private DrawerLayout drawer;
@@ -35,7 +38,11 @@ public class MainActivity extends BaseActivity
         FrameLayout mFrameLayout = (FrameLayout) findViewById(R.id.main_frameLayout);
         BottomNavigationView mMainbottomNavigationView = (BottomNavigationView) findViewById(R.id.main_bottomNavigationView);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-
+        View headerView = navigationView.getHeaderView(0);
+        TextView nickName = headerView.findViewById(R.id.user_nickName);
+        ZQImageViewRoundOval headImg = headerView.findViewById(R.id.user_headImg);
+        nickName.setOnClickListener(this);
+        headerView.setOnClickListener(this);
         navigationView.setNavigationItemSelectedListener(this);
         addFragment(HomePageFragment.class, R.id.main_frameLayout);
         mMainbottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -109,5 +116,18 @@ public class MainActivity extends BaseActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.user_nickName:
+            case R.id.user_headImg:
+                startActivity(LoginAndRegisterActivity.class);
+                break;
+            default:
+                break;
+
+        }
     }
 }
