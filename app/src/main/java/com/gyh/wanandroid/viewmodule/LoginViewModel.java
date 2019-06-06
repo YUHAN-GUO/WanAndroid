@@ -4,10 +4,17 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
 
+import com.base.gyh.baselib.base.IBaseHttpResultCallBack;
+import com.base.gyh.baselib.data.remote.retrofit.HttpUtils;
+import com.base.gyh.baselib.widgets.netstatae.NetStateLayout;
 import com.gyh.wanandroid.app.AppConstant;
+import com.gyh.wanandroid.data.bean.LoginBean;
+import com.gyh.wanandroid.data.retrofit.DataService;
 import com.gyh.wanandroid.databinding.FragmentLoginBinding;
 import com.gyh.wanandroid.view.fragment.LoginFragment;
 import com.jeremyliao.liveeventbus.LiveEventBus;
+
+import me.linkaipeng.autosp.AppConfigSpSP;
 
 /**
  * Created by GUOYH on 2019/6/5.
@@ -15,6 +22,8 @@ import com.jeremyliao.liveeventbus.LiveEventBus;
 public class LoginViewModel {
     private LoginFragment fragment;
     private FragmentLoginBinding binding;
+    private String userName;
+    private String userPaw;
 
     public LoginViewModel(LoginFragment fragment, FragmentLoginBinding binding) {
         this.fragment = fragment;
@@ -38,20 +47,57 @@ public class LoginViewModel {
     }
     private void submit() {
         // validate
-        String userName = binding.loginEdUserName.getText().toString().trim();
+        userName = binding.loginEdUserName.getText().toString().trim();
         if (TextUtils.isEmpty(userName)) {
             Toast.makeText(fragment.getContext(), "请输入用户名", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        String userPaw = binding.loginEdUserPaw.getText().toString().trim();
+        userPaw = binding.loginEdUserPaw.getText().toString().trim();
         if (TextUtils.isEmpty(userPaw)) {
             Toast.makeText(fragment.getContext(), "请输入密码", Toast.LENGTH_SHORT).show();
             return;
         }
 
         // TODO validate success, do something
+        toLogin(userName, userPaw);
 
 
+    }
+
+
+    public void stateShow(int type) {
+        if (type==NetStateLayout.CONTENT_STATE_HIDE){
+            binding.loginContent.setVisibility(View.VISIBLE);
+        }else if (type == NetStateLayout.CONTENT_STATE_SHOW_NET_ERROR){
+            binding.loginContent.setVisibility(View.GONE);
+        }
+        binding.loginState.setContentState(type);
+    }
+
+    private void toLogin(String userName, String userPaw) {
+        stateShow(NetStateLayout.CONTENT_STATE_SHOW_LOADING);
+        HttpUtils.obserableUtils(DataService.getService().login(userName, userPaw), fragment, new IBaseHttpResultCallBack<LoginBean>() {
+            @Override
+            public void onSuccess(LoginBean data) {
+                stateShow(NetStateLayout.CONTENT_STATE_HIDE);
+                loginSuccess(data);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                stateShow(NetStateLayout.CONTENT_STATE_HIDE);
+                Toast.makeText(fragment.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void loginSuccess(LoginBean data) {
+        Toast.makeText(fragment.getContext(), "登录成功", Toast.LENGTH_SHORT).show();
+        AppConfigSpSP.getInstance().setIsLogin(true);
+        data.setPassword(userPaw);
+        AppConfigSpSP.getInstance().setNickName(data.getUsername());
+        LiveEventBus.get().with(AppConstant.LiveEventBusKey.UP_USER_MSG,LoginBean.class).post(data);
+        fragment.closeActivity();
     }
 }

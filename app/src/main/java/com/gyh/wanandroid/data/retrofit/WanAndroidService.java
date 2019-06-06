@@ -28,6 +28,7 @@ public interface WanAndroidService {
 
     /**
      * 登录
+     *
      * @param userName
      * @param password
      * @return
@@ -38,6 +39,7 @@ public interface WanAndroidService {
 
     /**
      * 注册
+     *
      * @param userName
      * @param password
      * @param repssword
@@ -103,27 +105,40 @@ public interface WanAndroidService {
 
     /**
      * Navigation Data
+     *
      * @return
      */
     @GET("/navi/json")
     Observable<HttpResult<List<NavigationArticleBean>>> getNavigationData();
 
-//    /***
-//     * 收藏文章
-//     * @param id
-//     * @return
-//     */
-//    @POST("lg/collect/{id}/json")
-//    Observable<BaseBean<Object>> collectArticle(@Path("id") int id);
-//
-//    /***
-//     * 文章取消收藏
-//     * @param id
-//     * @return
-//     */
-//    @POST("lg/uncollect_originId/{id}/json")
-//    Observable<BaseBean<Object>> cancleCollectArticle(@Path("id") int id);
-//
+
+
+
+    /**
+     * 退出登录
+     *
+     * @return
+     */
+    @GET("/user/logout/json")
+    Observable<HttpResult<Object>> loginOut();
+
+
+    /***
+     * 收藏站内文章
+     * @param id
+     * @return
+     */
+    @POST("lg/collect/{id}/json")
+    Observable<HttpResult<Object>> collectArticle(@Path("id") int id);
+
+        /***
+     * 文章取消收藏
+     * @param id
+     * @return
+     */
+    @POST("lg/uncollect_originId/{id}/json")
+    Observable<HttpResult<Object>> unCollectArticle(@Path("id") int id);
+
 
 //    @GET("/lg/collect/list/{pageNo}/json")
 //    Observable<BaseBean<ArticleList>> getCollections(@Path("pageNo") int pageNo);
@@ -132,8 +147,7 @@ public interface WanAndroidService {
 //    @FormUrlEncoded
 //    Observable<BaseBean<Object>> cancelCollectArticle(@Path("id") int id, @Field("originId") int originid);
 //
-//    @GET("/user/logout/json")
-//    Observable<BaseBean<Object>> logout();
+
 //
 //    @GET("/hotkey/json")
 //    Observable<BaseBean<List<HotKeyBean>>> getHotKeys();

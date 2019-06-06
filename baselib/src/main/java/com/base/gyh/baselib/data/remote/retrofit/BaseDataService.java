@@ -2,10 +2,10 @@
 package com.base.gyh.baselib.data.remote.retrofit;
 
 import com.base.gyh.baselib.BuildConfig;
+import com.base.gyh.baselib.base.BaseApplication;
+import com.base.gyh.baselib.data.remote.retrofit.cookie.CookieManager;
 
 import java.util.concurrent.TimeUnit;
-
-
 
 
 import okhttp3.OkHttpClient;
@@ -24,21 +24,22 @@ public class BaseDataService {
     private static volatile Object mRetrofitService;
 
 
-    public static Object getService(Class zclas){
+    public static Object getService(Class zclas) {
 
-        if(mRetrofitService == null){
-            synchronized (BaseDataService.class){
-                if(mRetrofitService == null){
+        if (mRetrofitService == null) {
+            synchronized (BaseDataService.class) {
+                if (mRetrofitService == null) {
                     HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
 
-                    if(BuildConfig.isDebug){
+                    if (BuildConfig.isDebug) {
                         logging.setLevel(HttpLoggingInterceptor.Level.HEADERS);
-                    }else{
+                    } else {
                         logging.setLevel(HttpLoggingInterceptor.Level.NONE);
                     }
 
                     OkHttpClient httpClient = new OkHttpClient.Builder()
-                            .addInterceptor(logging)
+                            .addInterceptor(logging).
+                                    cookieJar(new CookieManager(BaseApplication.getContext()))
 //                            .addInterceptor(new AddHeaderInterceptor())
 //                            .addInterceptor(new SaveCookieInterceptor())
                             .connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS)
@@ -64,9 +65,9 @@ public class BaseDataService {
  * 使用创建一个类 WanAndroidService 是app下的 可以参考 package com.base.gyh.baselib.data.remote.retrofit;
  * 注意不是lib下的需要自己在app下创建
  * public class DataService {
- *
- *     public static WanAndroidService getService(){
- *         return  (WanAndroidService) BaseDataService.getService(WanAndroidService.class);
- *     }
+ * <p>
+ * public static WanAndroidService getService(){
+ * return  (WanAndroidService) BaseDataService.getService(WanAndroidService.class);
+ * }
  * }
  */

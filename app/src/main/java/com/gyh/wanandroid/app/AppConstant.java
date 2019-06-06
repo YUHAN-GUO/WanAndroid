@@ -18,6 +18,7 @@ public class AppConstant {
     public interface LiveEventBusKey{
         //0:登录 1：注册
         String UP_TOOLBAR_TITLE = "UpToolBarTitle";
+        String UP_USER_MSG = "UpUserMsg";
     }
 
 

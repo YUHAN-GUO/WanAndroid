@@ -140,7 +140,8 @@ public class RegisterViewModel  {
             @Override
             public void onSuccess(LoginBean data) {
                 stateShow(NetStateLayout.CONTENT_STATE_HIDE);
-
+                Toast.makeText(fragment.getContext(), "注册成功", Toast.LENGTH_SHORT).show();
+                LiveEventBus.get().with(AppConstant.LiveEventBusKey.UP_TOOLBAR_TITLE,int.class).post(0);
             }
 
             @Override

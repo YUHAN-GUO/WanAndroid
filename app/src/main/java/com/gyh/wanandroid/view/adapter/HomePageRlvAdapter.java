@@ -36,17 +36,28 @@ public class HomePageRlvAdapter extends BaseQuickAdapter<ArticleDataBean.DatasBe
 
     @Override
     protected void convert(MyViewHolder helper, ArticleDataBean.DatasBean item) {
-        ViewDataBinding binding = helper.getBinding();
-        binding.setVariable(BR.datasBean,item);
-        CheckBox collect = helper.getView(R.id.item_home_rlv_img_collect);
-        collect.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                onCollectListener.onCollectClick(helper.getLayoutPosition(), isChecked);
-            }
-        });
         if (helper.getLayoutPosition() == cloocet) {
             item.setCollect(is);
+        }
+        ViewDataBinding binding = helper.getBinding();
+        binding.setVariable(BR.datasBean,item);
+        ImageView collect = helper.getView(R.id.item_home_rlv_img_collect);
+        collect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (item.isCollect()){
+                    onCollectListener.onCollectClick(item,helper.getLayoutPosition(), false);
+                }else{
+                    onCollectListener.onCollectClick(item,helper.getLayoutPosition(), true);
+
+                }
+            }
+        });
+
+        if (item.isCollect()){
+            collect.setImageDrawable(ContextCompat.getDrawable(mContext,R.drawable.ic_favorite_black));
+        }else {
+            collect.setImageDrawable(ContextCompat.getDrawable(mContext,R.drawable.ic_favorite_border));
         }
     }
 
@@ -82,10 +93,10 @@ public class HomePageRlvAdapter extends BaseQuickAdapter<ArticleDataBean.DatasBe
     public void setCollect(int position, boolean isCheck) {
         cloocet = position;
         is = isCheck;
-        notifyDataSetChanged();
+        notifyItemChanged(position);
     }
 
     public interface OnCollectListener {
-        void onCollectClick(int i, boolean isCheck);
+        void onCollectClick(ArticleDataBean.DatasBean item,int position, boolean isCheck);
     }
 }

@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.base.gyh.baselib.annotation.Constant;
 import com.base.gyh.baselib.annotation.LoadType;
@@ -15,6 +16,7 @@ import com.base.gyh.baselib.base.BaseFragment;
 import com.base.gyh.baselib.base.IBaseHttpResultCallBack;
 import com.base.gyh.baselib.base.IBaseHttpResultTypeCallBack;
 import com.base.gyh.baselib.data.remote.retrofit.HttpUtils;
+import com.base.gyh.baselib.utils.mylog.Logger;
 import com.base.gyh.baselib.widgets.netstatae.INetErrorView;
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -79,6 +81,43 @@ public class HomePageViewModel {
                 LiveEventBus.get().with(AppConstant.MAIN_FRAGMENT_BACK, int.class).post(0);
             }
         });
+        rlvAdapter.setOnCollectListener(new HomePageRlvAdapter.OnCollectListener() {
+            @Override
+            public void onCollectClick(ArticleDataBean.DatasBean item, int position, boolean isChecked) {
+                isCollect(isChecked,item,position);
+            }
+        });
+    }
+
+    private void isCollect(boolean isChecked,ArticleDataBean.DatasBean item,int position) {
+        Logger.d("%s+++++++%s","guoyhisChecked",isChecked);
+        if (isChecked){
+            HttpUtils.obserableUtils(DataService.getService().collectArticle(item.getId()), rxFragment, new IBaseHttpResultCallBack<Object>() {
+                @Override
+                public void onSuccess(Object data) {
+                    rlvAdapter.setCollect(position, true);
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    Toast.makeText(rxFragment.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                    rlvAdapter.setCollect(position, false);
+                }
+            });
+        }else{
+            HttpUtils.obserableUtils(DataService.getService().unCollectArticle(item.getId()), rxFragment, new IBaseHttpResultCallBack<Object>() {
+                @Override
+                public void onSuccess(Object data) {
+                    rlvAdapter.setCollect(position, false);
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    Toast.makeText(rxFragment.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
     public void getHomeData() {
@@ -182,14 +221,7 @@ public class HomePageViewModel {
             }
 
         });
-        rlvAdapter.setOnCollectListener(new HomePageRlvAdapter.OnCollectListener() {
-            @Override
-            public void onCollectClick(int position, boolean isChecked) {
-                if (binding.homeContent.getScrollState() == RecyclerView.SCROLL_STATE_IDLE && (!binding.homeContent.isComputingLayout())) {
-                    rlvAdapter.setCollect(position, isChecked);
-                }
-            }
-        });
+
         rlvAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {

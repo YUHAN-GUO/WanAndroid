@@ -13,22 +13,31 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.base.gyh.baselib.base.BaseActivity;
+import com.base.gyh.baselib.base.IBaseHttpResultCallBack;
+import com.base.gyh.baselib.data.remote.retrofit.HttpUtils;
 import com.base.gyh.baselib.widgets.view.ZQImageViewRoundOval;
 import com.gyh.wanandroid.R;
 import com.gyh.wanandroid.app.AppConstant;
+import com.gyh.wanandroid.data.bean.LoginBean;
+import com.gyh.wanandroid.data.retrofit.DataService;
 import com.gyh.wanandroid.view.fragment.HomePageFragment;
 import com.gyh.wanandroid.view.fragment.KnowledgeFragment;
 import com.gyh.wanandroid.view.fragment.NavigationFragment;
 import com.gyh.wanandroid.view.fragment.ProjectsFragment;
 import com.jeremyliao.liveeventbus.LiveEventBus;
 
+import me.linkaipeng.autosp.AppConfigSpSP;
+
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
     private boolean isOpenDraw = false;
     private DrawerLayout drawer;
+    private TextView nickName;
+    private ZQImageViewRoundOval headImg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,10 +48,17 @@ public class MainActivity extends BaseActivity
         BottomNavigationView mMainbottomNavigationView = (BottomNavigationView) findViewById(R.id.main_bottomNavigationView);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
-        TextView nickName = headerView.findViewById(R.id.user_nickName);
-        ZQImageViewRoundOval headImg = headerView.findViewById(R.id.user_headImg);
+
+
+
+        nickName = headerView.findViewById(R.id.user_nickName);
+        headImg = headerView.findViewById(R.id.user_headImg);
         nickName.setOnClickListener(this);
         headerView.setOnClickListener(this);
+        if (AppConfigSpSP.getInstance().getIsLogin()){
+            String nickNameS = AppConfigSpSP.getInstance().getNickName();
+            nickName.setText(nickNameS);
+        }
         navigationView.setNavigationItemSelectedListener(this);
         addFragment(HomePageFragment.class, R.id.main_frameLayout);
         mMainbottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -81,6 +97,12 @@ public class MainActivity extends BaseActivity
                 drawer.openDrawer(GravityCompat.START);
             }
         });
+        LiveEventBus.get().with(AppConstant.LiveEventBusKey.UP_USER_MSG,LoginBean.class).observe(this, new Observer<LoginBean>() {
+            @Override
+            public void onChanged(@Nullable LoginBean loginBean) {
+                nickName.setText(loginBean.getUsername());
+            }
+        });
     }
 
     @Override
@@ -109,8 +131,8 @@ public class MainActivity extends BaseActivity
 
         } else if (id == R.id.nav_share) {
 
-        } else if (id == R.id.nav_send) {
-
+        } else if (id == R.id.nav_loginOut) {
+            loginOut();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -118,12 +140,30 @@ public class MainActivity extends BaseActivity
         return true;
     }
 
+    private void loginOut() {
+        HttpUtils.obserableUtils(DataService.getService().loginOut(), this, new IBaseHttpResultCallBack<Object>() {
+            @Override
+            public void onSuccess(Object data) {
+                startActivity(LoginAndRegisterActivity.class);
+                AppConfigSpSP.getInstance().setIsLogin(false);
+                AppConfigSpSP.getInstance().setNickName("请先登录");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.user_nickName:
             case R.id.user_headImg:
-                startActivity(LoginAndRegisterActivity.class);
+                if (!AppConfigSpSP.getInstance().getIsLogin()){
+                    startActivity(LoginAndRegisterActivity.class);
+                }
                 break;
             default:
                 break;

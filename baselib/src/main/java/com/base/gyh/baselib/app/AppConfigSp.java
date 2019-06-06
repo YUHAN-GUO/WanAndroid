@@ -15,23 +15,30 @@ import me.linkaipemg.autospannotation.AutoSharedPreferences;
  */
 @AutoSharedPreferences(mode = Context.MODE_PRIVATE)
 public class AppConfigSp {
-    @AutoGenerateField(filedName = "StudentName", defaultStringValue = "ddd", commitType = AutoGenerateField.CommitType.APPLY)
-    private String name;
-
     @AutoGenerateField(defaultIntValue = -10)
     private int count;
 
     @AutoGenerateField(defaultLongValue = 90L, commitType = AutoGenerateField.CommitType.COMMIT)
     private long startTime;
 
-    @AutoGenerateField(defaultBooleanValue = true)
-    private boolean isClose;
 
-    @AutoGenerateField(defaultFloatValue = 0.534534534f)
-    private float price;
+    /**
+     * 是否登录过
+     */
+    @AutoGenerateField(defaultBooleanValue = false)
+    private boolean isLogin;
 
-    @AutoGenerateField
-    private Set<String> productSet;
+    /**
+     * 用户昵称
+     */
+    @AutoGenerateField(defaultStringValue = "WanAndroid")
+    private String nickName;
+
+    /**
+     * 用户名
+     */
+    @AutoGenerateField(defaultStringValue = "")
+    private String userName;
 }
 /**
  * 使用：
