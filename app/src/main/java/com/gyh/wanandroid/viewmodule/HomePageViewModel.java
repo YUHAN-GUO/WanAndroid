@@ -90,7 +90,6 @@ public class HomePageViewModel {
     }
 
     private void isCollect(boolean isChecked,ArticleDataBean.DatasBean item,int position) {
-        Logger.d("%s+++++++%s","guoyhisChecked",isChecked);
         if (isChecked){
             HttpUtils.obserableUtils(DataService.getService().collectArticle(item.getId()), rxFragment, new IBaseHttpResultCallBack<Object>() {
                 @Override

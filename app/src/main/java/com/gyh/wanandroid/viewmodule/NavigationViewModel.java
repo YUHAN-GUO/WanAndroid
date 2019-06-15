@@ -8,6 +8,7 @@ import android.view.View;
 import com.base.gyh.baselib.base.BaseFragment;
 import com.base.gyh.baselib.base.IBaseHttpResultCallBack;
 import com.base.gyh.baselib.data.remote.retrofit.HttpUtils;
+import com.base.gyh.baselib.utils.mylog.Logger;
 import com.base.gyh.baselib.widgets.netstatae.INetErrorView;
 import com.base.gyh.baselib.widgets.netstatae.NetStateLayout;
 import com.chad.library.adapter.base.BaseQuickAdapter;

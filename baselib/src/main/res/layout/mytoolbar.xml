@@ -8,8 +8,6 @@
     app:contentInsetLeft="0dp"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_56">
-
-
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
