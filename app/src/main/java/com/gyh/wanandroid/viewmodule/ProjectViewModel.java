@@ -37,7 +37,7 @@ public class ProjectViewModel {
     }
 
     private void setListener() {
-        binding.projectStateLayout.setOnRetryClickListener(new INetErrorView.OnRetryClickListener() {
+        binding.projectStateLayout.setOnErrorRetryClickListener(new INetErrorView.OnRetryClickListener() {
             @Override
             public void onRetryClicked() {
                 getData();

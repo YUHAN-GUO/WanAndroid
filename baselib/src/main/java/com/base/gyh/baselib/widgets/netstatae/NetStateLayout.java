@@ -18,6 +18,8 @@ import com.base.gyh.baselib.utils.mylog.Logger;
 public class NetStateLayout extends FrameLayout {
     private INetErrorView mNetErrorView;
     private INetLoadingView mNetLoadingView;
+    private INetEmptyView mNetEmptyView;
+    private String netEmptyClassName;
     private String netErrorClassName;
     private String netLoadingClassName;
 
@@ -33,6 +35,11 @@ public class NetStateLayout extends FrameLayout {
      * hide customized view,show your data content
      */
     public static final int CONTENT_STATE_HIDE = 0x3;
+
+    /**
+     * show customized network empty view
+     */
+    public static final int CONTENT_STATE_EMPTY = 0x4;
 
     private int mContentState = CONTENT_STATE_HIDE;
 
@@ -54,13 +61,21 @@ public class NetStateLayout extends FrameLayout {
         mNetErrorView.hide();
     }
 
-
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-
+    /**
+     * 设置空布局
+     * @param netEmptyView
+     */
+    public void setNetEmptyView(INetEmptyView netEmptyView){
+        if (netEmptyView==null){
+            return;
+        }
+        if (mNetEmptyView!=null){
+            removeView(mNetEmptyView.getView(getContext()));
+        }
+        this.mNetEmptyView = netEmptyView;
+        addView(netEmptyView.getView(getContext()));
+        mNetEmptyView.hide();
     }
-
     /**
      * set customized network loading view.
      *
@@ -79,6 +94,14 @@ public class NetStateLayout extends FrameLayout {
         mNetLoadingView.hide();
     }
 
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+
+    }
+
+
+
 
     public NetStateLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -87,6 +110,7 @@ public class NetStateLayout extends FrameLayout {
         netLoadingClassName = ta.getString(R.styleable.NetStateLayout_net_loading);
         setNetLoadingView(new SimpleNetLoadingView());
         setNetErrorView(new SimpleNetErrorView());
+        setNetEmptyView(new SimpleNetEmptyView());
         ta.recycle();
     }
 
@@ -154,7 +178,7 @@ public class NetStateLayout extends FrameLayout {
     }
 
 
-    public void setOnRetryClickListener(INetErrorView.OnRetryClickListener onRetryClickListener) {
+    public void setOnErrorRetryClickListener(INetErrorView.OnRetryClickListener onRetryClickListener) {
         if (mNetErrorView == null) {
             try {
                 Class<?> netErrorClass = Class.forName(netErrorClassName);
@@ -167,5 +191,58 @@ public class NetStateLayout extends FrameLayout {
         if (mNetErrorView != null) {
             mNetErrorView.setRetryClickListener(onRetryClickListener);
         }
+    }
+    public void setOnEmptyRetryClickListener(INetEmptyView.OnRetryClickListener onRetryClickListener) {
+        if (mNetEmptyView == null) {
+            try {
+                Class<?> netEmptyClass = Class.forName(netEmptyClassName);
+                mNetEmptyView = (INetEmptyView) netEmptyClass.newInstance();
+                addView(mNetErrorView.getView(getContext()), new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        if (mNetEmptyView != null) {
+            mNetEmptyView.setRetryClickListener(onRetryClickListener);
+        }
+    }
+
+    public  interface OnEmptyAndErrorRetryClickListener{
+        void emptyClick(INetEmptyView.OnRetryClickListener onEmptyRetryClickListener);
+        void errorClick(INetErrorView.OnRetryClickListener onErrorRetryClickListener);
+    }
+    private OnEmptyAndErrorRetryClickListener mOnEmptyAndErrorRetryClickListener;
+    public void setOnEmptyAndErrorRetryClickListener(OnEmptyAndErrorRetryClickListener onEmptyAndErrorRetryClickListener){
+        if (mNetErrorView == null) {
+            try {
+                Class<?> netErrorClass = Class.forName(netErrorClassName);
+                mNetErrorView = (INetErrorView) netErrorClass.newInstance();
+                addView(mNetErrorView.getView(getContext()), new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        if (mNetEmptyView == null) {
+            try {
+                Class<?> netEmptyClass = Class.forName(netEmptyClassName);
+                mNetEmptyView = (INetEmptyView) netEmptyClass.newInstance();
+                addView(mNetErrorView.getView(getContext()), new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        onEmptyAndErrorRetryClickListener.emptyClick(new INetEmptyView.OnRetryClickListener() {
+            @Override
+            public void onRetryClicked() {
+                mNetEmptyView.setRetryClickListener(this);
+            }
+        });
+        onEmptyAndErrorRetryClickListener.errorClick(new INetErrorView.OnRetryClickListener() {
+            @Override
+            public void onRetryClicked() {
+                mNetErrorView.setRetryClickListener(this);
+            }
+        });
     }
 }

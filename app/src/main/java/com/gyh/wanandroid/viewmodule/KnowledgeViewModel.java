@@ -47,7 +47,7 @@ public class KnowledgeViewModel implements OnRefreshLoadMoreListener {
     }
 
     private void setListener() {
-        binding.knowledgeStateLayout.setOnRetryClickListener(new INetErrorView.OnRetryClickListener() {
+        binding.knowledgeStateLayout.setOnErrorRetryClickListener(new INetErrorView.OnRetryClickListener() {
             @Override
             public void onRetryClicked() {
                 getKnowData(0);

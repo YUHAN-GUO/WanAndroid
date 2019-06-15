@@ -42,6 +42,6 @@
     <declare-styleable name="NetStateLayout">
         <attr name="net_error" format="string" />
         <attr name="net_loading" format="string" />
-        <attr name="content_id" format="integer"/>
+        <attr name="content_id" format="reference"/>
     </declare-styleable>
 </resources>

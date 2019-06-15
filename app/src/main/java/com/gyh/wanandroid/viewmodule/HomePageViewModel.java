@@ -17,7 +17,9 @@ import com.base.gyh.baselib.base.IBaseHttpResultCallBack;
 import com.base.gyh.baselib.base.IBaseHttpResultTypeCallBack;
 import com.base.gyh.baselib.data.remote.retrofit.HttpUtils;
 import com.base.gyh.baselib.utils.mylog.Logger;
+import com.base.gyh.baselib.widgets.netstatae.INetEmptyView;
 import com.base.gyh.baselib.widgets.netstatae.INetErrorView;
+import com.base.gyh.baselib.widgets.netstatae.NetStateLayout;
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.gyh.wanandroid.app.AppConstant;
@@ -68,7 +70,18 @@ public class HomePageViewModel {
     }
 
     private void setListener() {
-        binding.homePageState.setOnRetryClickListener(new INetErrorView.OnRetryClickListener() {
+        binding.homePageState.setOnEmptyAndErrorRetryClickListener(new NetStateLayout.OnEmptyAndErrorRetryClickListener() {
+            @Override
+            public void emptyClick(INetEmptyView.OnRetryClickListener onEmptyRetryClickListener) {
+
+            }
+
+            @Override
+            public void errorClick(INetErrorView.OnRetryClickListener onErrorRetryClickListener) {
+
+            }
+        });
+        binding.homePageState.setOnErrorRetryClickListener(new INetErrorView.OnRetryClickListener() {
             @Override
             public void onRetryClicked() {
                 getHomeData();

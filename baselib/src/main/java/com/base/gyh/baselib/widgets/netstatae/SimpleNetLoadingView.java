@@ -16,7 +16,7 @@ public class SimpleNetLoadingView implements INetLoadingView {
     @Override
     public View getView(Context context) {
         if (mView == null) {
-            mView = View.inflate(context, R.layout.state_loading, null);
+            mView = View.inflate(context, R.layout.state_load_ing, null);
         }
         return mView;
     }
