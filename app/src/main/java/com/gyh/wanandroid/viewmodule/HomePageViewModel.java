@@ -4,6 +4,7 @@ import android.databinding.ObservableBoolean;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -22,6 +23,7 @@ import com.base.gyh.baselib.widgets.netstatae.INetErrorView;
 import com.base.gyh.baselib.widgets.netstatae.NetStateLayout;
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.gyh.wanandroid.R;
 import com.gyh.wanandroid.app.AppConstant;
 import com.gyh.wanandroid.data.bean.ArticleDataBean;
 import com.gyh.wanandroid.data.bean.BannerDataBean;
@@ -39,6 +41,7 @@ import java.util.List;
 
 import cn.bingoogolapple.bgabanner.BGABanner;
 
+import static com.base.gyh.baselib.widgets.netstatae.NetStateLayout.CONTENT_STATE_EMPTY;
 import static com.base.gyh.baselib.widgets.netstatae.NetStateLayout.CONTENT_STATE_HIDE;
 import static com.base.gyh.baselib.widgets.netstatae.NetStateLayout.CONTENT_STATE_SHOW_LOADING;
 import static com.base.gyh.baselib.widgets.netstatae.NetStateLayout.CONTENT_STATE_SHOW_NET_ERROR;
@@ -54,17 +57,15 @@ public class HomePageViewModel {
     private int page = 0;
     private FragmentHomePage3Binding binding;
     private HomePageRlvAdapter rlvAdapter;
-    private List<ArticleDataBean.DatasBean> datasBeanList;
     private String n;
 
     public HomePageViewModel(FragmentHomePage3Binding binding, BaseFragment rxFragment) {
         this.binding = binding;
         this.rxFragment = rxFragment;
-        binding.homeContent.setLayoutManager(new LinearLayoutManager(rxFragment.getContext()));
-        rlvAdapter = new HomePageRlvAdapter(datasBeanList);
-        binding.homeContent.setAdapter(rlvAdapter);
+
         binding.homeRefresh.setRefreshFooter(new ClassicsFooter(rxFragment.getContext()));
         binding.homeRefresh.setEnableHeaderTranslationContent(true);
+        binding.homePageState.setNetEmptyImage(ContextCompat.getDrawable(rxFragment.getContext(),R.drawable.navigation_backound));
         getHomeData();
         setListener();
     }
@@ -72,20 +73,18 @@ public class HomePageViewModel {
     private void setListener() {
         binding.homePageState.setOnEmptyAndErrorRetryClickListener(new NetStateLayout.OnEmptyAndErrorRetryClickListener() {
             @Override
-            public void emptyClick(INetEmptyView.OnRetryClickListener onEmptyRetryClickListener) {
-
-            }
-
-            @Override
-            public void errorClick(INetErrorView.OnRetryClickListener onErrorRetryClickListener) {
-
-            }
-        });
-        binding.homePageState.setOnErrorRetryClickListener(new INetErrorView.OnRetryClickListener() {
-            @Override
-            public void onRetryClicked() {
+            public void onErrorRetryClicked() {
                 getHomeData();
+                Logger.d("%s++++++++%s","guoyh","ErrorClick");
             }
+
+            @Override
+            public void onEmptyRetryClicked() {
+                getHomeData();
+                Logger.d("%s++++++++%s","guoyh","EmptyClick123");
+
+            }
+
         });
         binding.homeToolbarBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,12 +93,7 @@ public class HomePageViewModel {
                 LiveEventBus.get().with(AppConstant.MAIN_FRAGMENT_BACK, int.class).post(0);
             }
         });
-        rlvAdapter.setOnCollectListener(new HomePageRlvAdapter.OnCollectListener() {
-            @Override
-            public void onCollectClick(ArticleDataBean.DatasBean item, int position, boolean isChecked) {
-                isCollect(isChecked,item,position);
-            }
-        });
+
     }
 
     private void isCollect(boolean isChecked,ArticleDataBean.DatasBean item,int position) {
@@ -155,9 +149,18 @@ public class HomePageViewModel {
         HttpUtils.obserableUtils(DataService.getService().getArticlesData(page), rxFragment, new IBaseHttpResultTypeCallBack<ArticleDataBean>() {
             @Override
             public void onSuccess(ArticleDataBean data, int type) {
-                initRlv(data, type);
                 binding.homeContentView.setVisibility(View.VISIBLE);
-                stateShow(CONTENT_STATE_HIDE);
+                List<ArticleDataBean.DatasBean> datas = data.getDatas();
+                datas.clear();
+                Logger.d("%s+++++++++%s","guoyh",datas.size()+"-----------");
+                if (datas!=null&&datas.size()>0){
+                    stateShow(CONTENT_STATE_HIDE);
+                    initRlv(data, type);
+                }else{
+                    stateShow(CONTENT_STATE_EMPTY);
+
+                }
+
             }
 
             @Override
@@ -190,35 +193,44 @@ public class HomePageViewModel {
     }
 
     private void stateShow(int type) {
+        if (type==CONTENT_STATE_EMPTY||type==CONTENT_STATE_SHOW_NET_ERROR){
+            binding.homeContentView.setVisibility(View.GONE);
+        }else {
+            binding.homeContentView.setVisibility(View.VISIBLE);
+        }
+
         binding.homePageState.setContentState(type);
     }
 
     private void initRlv(ArticleDataBean data, int type) {
-        if (datasBeanList == null) {
-            datasBeanList = new ArrayList<>();
-        }
         List<ArticleDataBean.DatasBean> datas = data.getDatas();
-        if (rlvAdapter == null) {
-            rlvAdapter = new HomePageRlvAdapter(datasBeanList);
+        if (rlvAdapter==null){
+            rlvAdapter = new HomePageRlvAdapter(datas);
+            binding.homeContent.setLayoutManager(new LinearLayoutManager(rxFragment.getContext()));
+            binding.homeContent.setAdapter(rlvAdapter);
+            rlvAdapter.setOnCollectListener(new HomePageRlvAdapter.OnCollectListener() {
+                @Override
+                public void onCollectClick(ArticleDataBean.DatasBean item, int position, boolean isChecked) {
+                    isCollect(isChecked,item,position);
+                }
+            });
         }
         switch (type) {
             case Constant.OnLoadType.frist:
-                datasBeanList.clear();
-                datasBeanList.addAll(datas);
+                rlvAdapter.setNewData(datas);
                 break;
             case Constant.OnLoadType.refresh:
                 binding.homeRefresh.finishRefresh();
-                datasBeanList.clear();
-                datasBeanList.addAll(datas);
+                rlvAdapter.setNewData(datas);
+
                 break;
             case Constant.OnLoadType.loadMore:
                 binding.homeRefresh.finishLoadMore();
-                datasBeanList.addAll(datas);
+                rlvAdapter.addData(datas);
                 break;
             default:
                 break;
         }
-        rlvAdapter.setNewData(datasBeanList);
         refrashAndLoadMoreListener();
     }
 

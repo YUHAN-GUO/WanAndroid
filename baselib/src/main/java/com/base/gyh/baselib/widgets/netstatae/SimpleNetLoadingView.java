@@ -6,10 +6,10 @@ import android.view.View;
 import com.base.gyh.baselib.R;
 
 
-/**
- * Created by xingliuhua on 2018/7/31.
- */
 
+/**
+ * Created by GUOYH on 2019/6/15.
+ */
 public class SimpleNetLoadingView implements INetLoadingView {
     private View mView;
 

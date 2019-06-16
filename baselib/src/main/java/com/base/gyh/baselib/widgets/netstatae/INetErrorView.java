@@ -4,15 +4,12 @@ import android.content.Context;
 import android.view.View;
 
 /**
- * INetErrorView is a interface for network error.
- * You can implement it to customize the UI.
- * SimpleNetErrorView has implemented it <p></p>
- * Created by xingliuhua on 2018/7/31.
+ * Created by GUOYH on 2019/6/15.
  */
 
 public interface INetErrorView {
 
-    void setRetryClickListener(OnRetryClickListener retryClickListener);
+    void setErrorRetryClickListener(OnErrorRetryClickListener retryClickListener);
 
     View getView(Context context);
 
@@ -20,7 +17,7 @@ public interface INetErrorView {
 
     void show();
 
-    interface OnRetryClickListener {
-        void onRetryClicked();
+    interface OnErrorRetryClickListener {
+        void onErrorRetryClicked();
     }
 }

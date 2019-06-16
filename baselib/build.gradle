@@ -89,6 +89,9 @@ dependencies {
     //WebView
     api 'com.just.agentweb:agentweb:4.0.3-beta' // (必选)
     api 'com.lcodecorex:tkrefreshlayout:1.0.7'
-
-    api  'cn.yc:YCStateLib:1.1.6'
+//    api  'cn.yc:YCStateLib:1.1.6'
+    //LoadingAnim
+    api 'com.example.mzy.indicators:LoadingAnimations:1.0.3'
+    api 'com.zyao89:zloading:1.2.0'
 }
+

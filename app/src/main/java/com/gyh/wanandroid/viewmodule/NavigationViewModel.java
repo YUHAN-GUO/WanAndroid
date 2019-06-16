@@ -40,10 +40,11 @@ public class NavigationViewModel {
     }
 
     private void setListener() {
-        binding.navigationStateLayout.setOnRetryClickListener(new INetErrorView.OnRetryClickListener() {
+        binding.navigationStateLayout.setOnErrorRetryClickListener(new INetErrorView.OnErrorRetryClickListener() {
             @Override
-            public void onRetryClicked() {
+            public void onErrorRetryClicked() {
                 getData();
+
             }
         });
     }

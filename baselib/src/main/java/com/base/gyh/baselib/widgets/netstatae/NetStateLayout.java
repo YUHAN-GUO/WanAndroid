@@ -2,17 +2,15 @@ package com.base.gyh.baselib.widgets.netstatae;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.annotation.Nullable;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.FrameLayout;
 
 import com.base.gyh.baselib.R;
-import com.base.gyh.baselib.utils.mylog.Logger;
 
 
 /**
- * Created by xlh on 2017/8/16.
+ * Created by GUOYH on 2019/6/15.
  */
 
 public class NetStateLayout extends FrameLayout {
@@ -30,16 +28,16 @@ public class NetStateLayout extends FrameLayout {
     /**
      * show customized network loading view
      */
-    public static final int CONTENT_STATE_SHOW_LOADING = 0x2;
+    public static final int CONTENT_STATE_EMPTY = 0x2;
     /**
      * hide customized view,show your data content
      */
-    public static final int CONTENT_STATE_HIDE = 0x3;
+    public static final int CONTENT_STATE_SHOW_LOADING = 0x3;
 
     /**
      * show customized network empty view
      */
-    public static final int CONTENT_STATE_EMPTY = 0x4;
+    public static final int CONTENT_STATE_HIDE = 0x4;
 
     private int mContentState = CONTENT_STATE_HIDE;
 
@@ -76,6 +74,9 @@ public class NetStateLayout extends FrameLayout {
         addView(netEmptyView.getView(getContext()));
         mNetEmptyView.hide();
     }
+    public void setNetEmptyImage(Drawable drawable){
+        mNetEmptyView.setImage(drawable);
+    }
     /**
      * set customized network loading view.
      *
@@ -107,6 +108,7 @@ public class NetStateLayout extends FrameLayout {
         super(context, attrs);
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.NetStateLayout);
         netErrorClassName = ta.getString(R.styleable.NetStateLayout_net_error);
+        netEmptyClassName = ta.getString(R.styleable.NetStateLayout_net_empty);
         netLoadingClassName = ta.getString(R.styleable.NetStateLayout_net_loading);
         setNetLoadingView(new SimpleNetLoadingView());
         setNetErrorView(new SimpleNetErrorView());
@@ -123,6 +125,7 @@ public class NetStateLayout extends FrameLayout {
     public int getContentState() {
         return mContentState;
     }
+    private OnEmptyAndErrorRetryClickListener mOnEmptyAndErrorRetryClickListener;
 
     /**
      * @param contentState {@linkplain #CONTENT_STATE_SHOW_NET_ERROR} ,{@link #CONTENT_STATE_SHOW_LOADING},{@link #CONTENT_STATE_HIDE}
@@ -155,6 +158,20 @@ public class NetStateLayout extends FrameLayout {
                 if (mNetLoadingView != null) {
                     mNetLoadingView.hide();
                 }
+                if (mNetEmptyView != null) {
+                    mNetEmptyView.hide();
+                }
+                break;
+            case CONTENT_STATE_EMPTY:
+                if (mNetErrorView != null) {
+                    mNetErrorView.hide();
+                }
+                if (mNetLoadingView != null) {
+                    mNetLoadingView.hide();
+                }
+                if (mNetEmptyView != null) {
+                    mNetEmptyView.show();
+                }
                 break;
             case CONTENT_STATE_SHOW_LOADING:
                 if (mNetErrorView != null) {
@@ -162,6 +179,9 @@ public class NetStateLayout extends FrameLayout {
                 }
                 if (mNetLoadingView != null) {
                     mNetLoadingView.show();
+                }
+                if (mNetEmptyView != null) {
+                    mNetEmptyView.hide();
                 }
                 break;
             case CONTENT_STATE_HIDE:
@@ -171,14 +191,16 @@ public class NetStateLayout extends FrameLayout {
                 if (mNetLoadingView != null) {
                     mNetLoadingView.hide();
                 }
+                if (mNetEmptyView != null) {
+                    mNetEmptyView.hide();
+                }
                 break;
             default:
                 break;
         }
     }
 
-
-    public void setOnErrorRetryClickListener(INetErrorView.OnRetryClickListener onRetryClickListener) {
+    public void setOnErrorRetryClickListener(INetErrorView.OnErrorRetryClickListener onRetryClickListener) {
         if (mNetErrorView == null) {
             try {
                 Class<?> netErrorClass = Class.forName(netErrorClassName);
@@ -189,10 +211,11 @@ public class NetStateLayout extends FrameLayout {
             }
         }
         if (mNetErrorView != null) {
-            mNetErrorView.setRetryClickListener(onRetryClickListener);
+            mNetErrorView.setErrorRetryClickListener(onRetryClickListener);
         }
     }
-    public void setOnEmptyRetryClickListener(INetEmptyView.OnRetryClickListener onRetryClickListener) {
+
+    public void setOnEmptyRetryClickListener(INetEmptyView.OnEmptyRetryClickListener onRetryClickListener) {
         if (mNetEmptyView == null) {
             try {
                 Class<?> netEmptyClass = Class.forName(netEmptyClassName);
@@ -203,16 +226,11 @@ public class NetStateLayout extends FrameLayout {
             }
         }
         if (mNetEmptyView != null) {
-            mNetEmptyView.setRetryClickListener(onRetryClickListener);
+            mNetEmptyView.setEmptyRetryClickListener(onRetryClickListener);
         }
     }
 
-    public  interface OnEmptyAndErrorRetryClickListener{
-        void emptyClick(INetEmptyView.OnRetryClickListener onEmptyRetryClickListener);
-        void errorClick(INetErrorView.OnRetryClickListener onErrorRetryClickListener);
-    }
-    private OnEmptyAndErrorRetryClickListener mOnEmptyAndErrorRetryClickListener;
-    public void setOnEmptyAndErrorRetryClickListener(OnEmptyAndErrorRetryClickListener onEmptyAndErrorRetryClickListener){
+    public void setOnEmptyAndErrorRetryClickListener(OnEmptyAndErrorRetryClickListener listener) {
         if (mNetErrorView == null) {
             try {
                 Class<?> netErrorClass = Class.forName(netErrorClassName);
@@ -231,18 +249,10 @@ public class NetStateLayout extends FrameLayout {
                 e.printStackTrace();
             }
         }
+        mNetEmptyView.setEmptyRetryClickListener(listener);
+        mNetErrorView.setErrorRetryClickListener(listener);
+    }
 
-        onEmptyAndErrorRetryClickListener.emptyClick(new INetEmptyView.OnRetryClickListener() {
-            @Override
-            public void onRetryClicked() {
-                mNetEmptyView.setRetryClickListener(this);
-            }
-        });
-        onEmptyAndErrorRetryClickListener.errorClick(new INetErrorView.OnRetryClickListener() {
-            @Override
-            public void onRetryClicked() {
-                mNetErrorView.setRetryClickListener(this);
-            }
-        });
+    public interface OnEmptyAndErrorRetryClickListener extends INetEmptyView.OnEmptyRetryClickListener, INetErrorView.OnErrorRetryClickListener {
     }
 }

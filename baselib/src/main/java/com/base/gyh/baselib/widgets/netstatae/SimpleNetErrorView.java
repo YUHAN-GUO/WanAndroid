@@ -6,24 +6,24 @@ import android.view.View;
 import com.base.gyh.baselib.R;
 
 
-/**
- * Created by xingliuhua on 2018/7/31.
- */
 
+/**
+ * Created by GUOYH on 2019/6/15.
+ */
 public class SimpleNetErrorView implements INetErrorView {
-    private OnRetryClickListener mRetryClickListener;
+    private OnErrorRetryClickListener mRetryClickListener;
     private View mView;
 
 
     @Override
-    public void setRetryClickListener(OnRetryClickListener retryClickListener) {
+    public void setErrorRetryClickListener(OnErrorRetryClickListener retryClickListener) {
         this.mRetryClickListener = retryClickListener;
         if (mView != null) {
             mView.findViewById(R.id.btn_retry).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (mRetryClickListener != null) {
-                        mRetryClickListener.onRetryClicked();
+                        mRetryClickListener.onErrorRetryClicked();
                     }
                 }
             });

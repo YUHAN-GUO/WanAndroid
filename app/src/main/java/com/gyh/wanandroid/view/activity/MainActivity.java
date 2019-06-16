@@ -5,9 +5,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,6 +17,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.base.gyh.baselib.adapter.vpager.MyFragmentVPAdapter;
 import com.base.gyh.baselib.base.BaseActivity;
 import com.base.gyh.baselib.base.IBaseHttpResultCallBack;
 import com.base.gyh.baselib.data.remote.retrofit.HttpUtils;
@@ -27,8 +30,15 @@ import com.gyh.wanandroid.view.fragment.HomePageFragment;
 import com.gyh.wanandroid.view.fragment.KnowledgeFragment;
 import com.gyh.wanandroid.view.fragment.NavigationFragment;
 import com.gyh.wanandroid.view.fragment.ProjectsFragment;
+import com.gyh.wanandroid.view.fragment.amain.AndroidArticleFragment;
+import com.gyh.wanandroid.view.fragment.amain.MySummaryFragment;
 import com.jeremyliao.liveeventbus.LiveEventBus;
 
+import java.util.ArrayList;
+
+import cn.bingoogolapple.bgabanner.transformer.DefaultPageTransformer;
+import cn.bingoogolapple.bgabanner.transformer.RotatePageTransformer;
+import cn.bingoogolapple.bgabanner.transformer.ZoomStackPageTransformer;
 import me.linkaipeng.autosp.AppConfigSpSP;
 
 public class MainActivity extends BaseActivity
@@ -43,50 +53,31 @@ public class MainActivity extends BaseActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ViewPager viewPager = findViewById(R.id.main_viewPager);
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        FrameLayout mFrameLayout = (FrameLayout) findViewById(R.id.main_frameLayout);
-        BottomNavigationView mMainbottomNavigationView = (BottomNavigationView) findViewById(R.id.main_bottomNavigationView);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
-
-
-
         nickName = headerView.findViewById(R.id.user_nickName);
         headImg = headerView.findViewById(R.id.user_headImg);
         nickName.setOnClickListener(this);
+        AndroidArticleFragment androidArticleFragment = new AndroidArticleFragment();
+        MySummaryFragment mySummaryFragment = new MySummaryFragment();
+
+        ArrayList<Fragment> fragments = new ArrayList<Fragment>();
+        fragments.add(androidArticleFragment);
+        fragments.add(mySummaryFragment);
+
+        MyFragmentVPAdapter myFragmentVPAdapter = new MyFragmentVPAdapter(getSupportFragmentManager(), fragments);
+        viewPager.setAdapter(myFragmentVPAdapter);
+        viewPager.setPageTransformer(true,new RotatePageTransformer());
+
         headerView.setOnClickListener(this);
         if (AppConfigSpSP.getInstance().getIsLogin()){
             String nickNameS = AppConfigSpSP.getInstance().getNickName();
             nickName.setText(nickNameS);
         }
         navigationView.setNavigationItemSelectedListener(this);
-        addFragment(HomePageFragment.class, R.id.main_frameLayout);
-        mMainbottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                switch (menuItem.getItemId()) {
-                    case R.id.homgpage:
-                        addFragment(HomePageFragment.class, R.id.main_frameLayout);
-                        return true;
-                    case R.id.projets:
-                        addFragment(ProjectsFragment.class, R.id.main_frameLayout);
 
-                        return true;
-                    case R.id.knowledge:
-                        addFragment(KnowledgeFragment.class, R.id.main_frameLayout);
-
-                        return true;
-                    case R.id.navigation:
-                        addFragment(NavigationFragment.class, R.id.main_frameLayout);
-
-                        return true;
-                    default:
-                        //nothing to do
-                        break;
-                }
-                return false;
-            }
-        });
         setListener();
     }
 

@@ -44,10 +44,11 @@ public class KnowledgeArticleChildViewModel implements OnRefreshLoadMoreListener
     private void setListener() {
         binding.fragmentKnowledgeArticleChildSmart.setOnRefreshLoadMoreListener(this);
 
-        binding.fragmentKnowledgeArticleStateLayout.setOnRetryClickListener(new INetErrorView.OnRetryClickListener() {
+        binding.fragmentKnowledgeArticleStateLayout.setOnErrorRetryClickListener(new INetErrorView.OnErrorRetryClickListener() {
             @Override
-            public void onRetryClicked() {
+            public void onErrorRetryClicked() {
                 getData(Constant.OnLoadType.frist);
+
             }
         });
     }

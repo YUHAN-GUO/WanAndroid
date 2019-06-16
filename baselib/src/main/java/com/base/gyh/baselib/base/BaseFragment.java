@@ -5,11 +5,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.trello.rxlifecycle2.components.support.RxFragment;
+
+import java.util.List;
 
 /*
  * created by taofu on 2018/11/28
@@ -18,6 +23,7 @@ public abstract class BaseFragment extends RxFragment {
 
     private View view;
     private BaseActivity mBaseActivity;
+    private FragmentManager mFragmentManager;
     /**
      * 是否初始化过布局
      */
@@ -34,9 +40,10 @@ public abstract class BaseFragment extends RxFragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-
+        mFragmentManager = getChildFragmentManager();
         if (activity instanceof BaseActivity) {
             mBaseActivity = (BaseActivity) activity;
+
         }
 
     }
@@ -92,10 +99,53 @@ public abstract class BaseFragment extends RxFragment {
      */
     protected abstract void loadData();
 
-    public void addFragment(Class<? extends BaseFragment> zClass, int layoutId) {
-        if (mBaseActivity != null) {
-            mBaseActivity.addFragment(zClass, layoutId);
+    // 封装公共的添加Fragment的方法
+    public void addFragment(Class<? extends BaseFragment> zClass,int layoutId){
+        FragmentTransaction transaction = mFragmentManager.beginTransaction();
+        String tag =  zClass.getName();
+
+        // 从 fragmentManager中查找这个fragment是否存在，
+        Fragment fragment = mFragmentManager.findFragmentByTag(tag);
+
+        if(fragment != null){ // 如果存在就不用重新创建
+            if(fragment.isAdded()){ // 如果 fragment 已经被添加
+                if(fragment.isHidden()){ // 如果fragment 已经被添加，并且处于隐藏状态，那么显示
+                    transaction.show(fragment); // 显示 fragment
+                    hideOtherPage(transaction,fragment); // 隐藏其他fragment
+                }
+            }else{ // 如果 fragment存在，但是没有被添加到activity，那么执行下面添加，（这种一般发生在activity 横竖屏切换）
+                transaction.add(layoutId, fragment);
+                hideOtherPage(transaction, fragment);
+            }
+        }else{
+            // 如果没有从fragmentManager 中通过tag 找到fragment,那么创建一个新的fragment 实例
+            try {
+                fragment = zClass.newInstance();
+            } catch (java.lang.InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+
+            if(fragment != null){
+                transaction.add(layoutId, fragment,tag);
+                hideOtherPage(transaction, fragment);
+            }
         }
+
+        transaction.commit();
+    }
+
+    // 隐藏除了将要显示的fragment 以外的其他所有fragment
+    private void hideOtherPage(FragmentTransaction transaction, Fragment willShowFragment){
+
+        List<Fragment> fragments =  mFragmentManager.getFragments();
+        for(Fragment fragment : fragments){
+            if(fragment != willShowFragment){
+                transaction.hide(fragment);
+            }
+        }
+
     }
 
     public void startActivity(Class<? extends Activity> zClass,Bundle bundle){
