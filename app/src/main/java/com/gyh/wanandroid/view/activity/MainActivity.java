@@ -37,6 +37,7 @@ import com.jeremyliao.liveeventbus.LiveEventBus;
 import java.util.ArrayList;
 
 import cn.bingoogolapple.bgabanner.transformer.DefaultPageTransformer;
+import cn.bingoogolapple.bgabanner.transformer.FlipPageTransformer;
 import cn.bingoogolapple.bgabanner.transformer.RotatePageTransformer;
 import cn.bingoogolapple.bgabanner.transformer.ZoomStackPageTransformer;
 import me.linkaipeng.autosp.AppConfigSpSP;
@@ -69,7 +70,7 @@ public class MainActivity extends BaseActivity
 
         MyFragmentVPAdapter myFragmentVPAdapter = new MyFragmentVPAdapter(getSupportFragmentManager(), fragments);
         viewPager.setAdapter(myFragmentVPAdapter);
-        viewPager.setPageTransformer(true,new RotatePageTransformer());
+        viewPager.setPageTransformer(true,new FlipPageTransformer());
 
         headerView.setOnClickListener(this);
         if (AppConfigSpSP.getInstance().getIsLogin()){
