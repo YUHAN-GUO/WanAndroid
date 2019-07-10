@@ -41,4 +41,6 @@ public class HttpResult<T> {
     public void setErrorMsg(String errorMsg) {
         this.errorMsg = errorMsg;
     }
+
+
 }

@@ -1,5 +1,6 @@
 package com.gyh.wanandroid.viewmodule;
 
+import android.Manifest;
 import android.databinding.ObservableBoolean;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,6 +18,7 @@ import com.base.gyh.baselib.base.BaseFragment;
 import com.base.gyh.baselib.base.IBaseHttpResultCallBack;
 import com.base.gyh.baselib.base.IBaseHttpResultTypeCallBack;
 import com.base.gyh.baselib.data.remote.retrofit.HttpUtils;
+import com.base.gyh.baselib.utils.PermissUtils;
 import com.base.gyh.baselib.utils.mylog.Logger;
 import com.base.gyh.baselib.widgets.netstatae.INetEmptyView;
 import com.base.gyh.baselib.widgets.netstatae.INetErrorView;
@@ -32,6 +34,9 @@ import com.gyh.wanandroid.databinding.FragmentHomePage3Binding;
 import com.gyh.wanandroid.view.activity.WebActivity;
 import com.gyh.wanandroid.view.adapter.HomePageRlvAdapter;
 import com.jeremyliao.liveeventbus.LiveEventBus;
+import com.qw.soul.permission.SoulPermission;
+import com.qw.soul.permission.bean.Permission;
+import com.qw.soul.permission.callbcak.CheckRequestPermissionListener;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.footer.ClassicsFooter;
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
@@ -50,15 +55,13 @@ import static com.base.gyh.baselib.widgets.netstatae.NetStateLayout.CONTENT_STAT
  * Created by GUOYH on 2019/5/25.
  */
 public class HomePageViewModel {
-
-
     public final ObservableBoolean mBannerIsSuccess = new ObservableBoolean(false);
     private BaseFragment rxFragment;
     private int page = 0;
     private FragmentHomePage3Binding binding;
     private HomePageRlvAdapter rlvAdapter;
     private String n;
-
+    private boolean successAll = true;
     public HomePageViewModel(FragmentHomePage3Binding binding, BaseFragment rxFragment) {
         this.binding = binding;
         this.rxFragment = rxFragment;
@@ -80,7 +83,7 @@ public class HomePageViewModel {
 
             @Override
             public void onEmptyRetryClicked() {
-                getHomeData();
+//                getHomeData();
                 Logger.d("%s++++++++%s","guoyh","EmptyClick123");
 
             }
@@ -127,6 +130,7 @@ public class HomePageViewModel {
     }
 
     public void getHomeData() {
+
         stateShow(CONTENT_STATE_SHOW_LOADING);
         getArticel(Constant.OnLoadType.frist);
         getBanner();
@@ -149,14 +153,13 @@ public class HomePageViewModel {
         HttpUtils.obserableUtils(DataService.getService().getArticlesData(page), rxFragment, new IBaseHttpResultTypeCallBack<ArticleDataBean>() {
             @Override
             public void onSuccess(ArticleDataBean data, int type) {
-                binding.homeContentView.setVisibility(View.VISIBLE);
                 List<ArticleDataBean.DatasBean> datas = data.getDatas();
-                datas.clear();
-                Logger.d("%s+++++++++%s","guoyh",datas.size()+"-----------");
+                Logger.d("%s+++++++++%s","guoyhArticleDataBean",datas.size()+"-----------");
                 if (datas!=null&&datas.size()>0){
                     stateShow(CONTENT_STATE_HIDE);
                     initRlv(data, type);
                 }else{
+                    successAll=false;
                     stateShow(CONTENT_STATE_EMPTY);
 
                 }
@@ -165,8 +168,6 @@ public class HomePageViewModel {
 
             @Override
             public void onError(Throwable e) {
-                binding.homeContentView.setVisibility(View.GONE);
-
                 stateShow(CONTENT_STATE_SHOW_NET_ERROR);
             }
         }, type);
@@ -178,14 +179,13 @@ public class HomePageViewModel {
             public void onSuccess(List<BannerDataBean> data) {
                 mBannerIsSuccess.set(true);
                 stateShow(CONTENT_STATE_HIDE);
+                Logger.d("%s+++++++++%s","guoyhBannerDataBean","-----------");
                 initBanner(data);
-                binding.homeContentView.setVisibility(View.VISIBLE);
 
             }
 
             @Override
             public void onError(Throwable e) {
-                binding.homeContentView.setVisibility(View.GONE);
                 stateShow(CONTENT_STATE_SHOW_NET_ERROR);
 
             }
@@ -195,7 +195,7 @@ public class HomePageViewModel {
     private void stateShow(int type) {
         if (type==CONTENT_STATE_EMPTY||type==CONTENT_STATE_SHOW_NET_ERROR){
             binding.homeContentView.setVisibility(View.GONE);
-        }else {
+        }else if(successAll){
             binding.homeContentView.setVisibility(View.VISIBLE);
         }
 
@@ -208,12 +208,7 @@ public class HomePageViewModel {
             rlvAdapter = new HomePageRlvAdapter(datas);
             binding.homeContent.setLayoutManager(new LinearLayoutManager(rxFragment.getContext()));
             binding.homeContent.setAdapter(rlvAdapter);
-            rlvAdapter.setOnCollectListener(new HomePageRlvAdapter.OnCollectListener() {
-                @Override
-                public void onCollectClick(ArticleDataBean.DatasBean item, int position, boolean isChecked) {
-                    isCollect(isChecked,item,position);
-                }
-            });
+
         }
         switch (type) {
             case Constant.OnLoadType.frist:
@@ -245,15 +240,49 @@ public class HomePageViewModel {
             }
 
         });
-
+        rlvAdapter.setOnCollectListener(new HomePageRlvAdapter.OnCollectListener() {
+            @Override
+            public void onCollectClick(ArticleDataBean.DatasBean item, int position, boolean isChecked) {
+                isCollect(isChecked,item,position);
+            }
+        });
         rlvAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                List<ArticleDataBean.DatasBean> data = adapter.getData();
-                String link = data.get(position).getLink();
-                Bundle bundle = new Bundle();
-                bundle.putString("url", link);
-                rxFragment.startActivity(WebActivity.class, bundle);
+                PermissUtils.calendarPermiss(new IBaseHttpResultCallBack<String>() {
+                    @Override
+                    public void onSuccess(String s) {
+                        Logger.d("%s++++++++++%s","guoyh",s);
+                        List<ArticleDataBean.DatasBean> data = adapter.getData();
+                        String link = data.get(position).getLink();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("url", link);
+                        rxFragment.startActivity(WebActivity.class, bundle);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Logger.d("%s++++++++++%s","guoyh",e.getMessage());
+                    }
+                });
+                SoulPermission.getInstance().checkAndRequestPermission(Manifest.permission.ACCESS_FINE_LOCATION,
+                        //if you want do noting or no need all the callbacks you may use SimplePermissionAdapter instead
+                        new CheckRequestPermissionListener() {
+                            @Override
+                            public void onPermissionOk(Permission permission) {
+
+
+//                        Utils.showMessage(view, permission.toString() + "\n is ok , you can do your operations");
+                            }
+
+                            @Override
+                            public void onPermissionDenied(Permission permission) {
+                                Logger.d("%s+++++++++++++%s", "guoyh", "失败");
+
+//                        Utils.showMessage(view, permission.toString() + " \n is refused you can not do next things");
+                            }
+                        });
+
             }
         });
         binding.homeRefresh.setOnRefreshLoadMoreListener(new OnRefreshLoadMoreListener() {

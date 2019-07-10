@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.widget.Toast;
 
+import com.base.gyh.baselib.utils.mylog.Logger;
 import com.qw.soul.permission.SoulPermission;
 import com.qw.soul.permission.bean.Permission;
 import com.qw.soul.permission.callbcak.CheckRequestPermissionListener;
@@ -17,27 +18,24 @@ public class CheckRequestPermissionAdapter implements CheckRequestPermissionList
     @Override
     public void onPermissionOk(Permission permission) {
         Activity activity = SoulPermission.getInstance().getTopActivity();
-        Toast.makeText(activity, permission.permissionName+"获取成功", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(activity, permission.permissionName+"获取成功", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onPermissionDenied(Permission permission) {
+        Logger.d("%s++++++++++++%s","guoyh","失败");
         //SoulPermission提供栈顶Activity
-        Activity activity = SoulPermission.getInstance().getTopActivity();
-        if (null == activity) {
-            return;
-        }
-        String permissionDesc = permission.getPermissionNameDesc();
-        new AlertDialog.Builder(activity)
-                .setTitle("提示")
-                .setMessage(permissionDesc + "异常，请前往设置－>权限管理，打开" + permissionDesc + "。")
-                .setPositiveButton("去设置", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        //去设置页
-                        SoulPermission.getInstance().goPermissionSettings();
-                    }
-                }).create().show();
+//        String permissionDesc = permission.getPermissionNameDesc();
+//        new AlertDialog.Builder(SoulPermission.getInstance().getContext().getApplicationContext())
+//                .setTitle("提示")
+//                .setMessage(permissionDesc + "异常，请前往设置－>权限管理，打开" + permissionDesc + "。")
+//                .setPositiveButton("去设置", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//                        //去设置页
+////                        SoulPermission.getInstance().goPermissionSettings();
+//                    }
+//                }).create().show();
     }
 
     @Override

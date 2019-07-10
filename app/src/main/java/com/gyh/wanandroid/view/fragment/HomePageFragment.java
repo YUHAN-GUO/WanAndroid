@@ -1,6 +1,7 @@
 package com.gyh.wanandroid.view.fragment;
 
 
+import android.Manifest;
 import android.content.pm.ActivityInfo;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
@@ -14,18 +15,26 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
+import com.base.gyh.baselib.adapter.permission.CheckRequestPermissionAdapter;
 import com.base.gyh.baselib.base.BaseFragment;
+import com.base.gyh.baselib.utils.PermissUtils;
 import com.base.gyh.baselib.utils.mylog.Logger;
 import com.bumptech.glide.Glide;
 import com.gyh.wanandroid.R;
 import com.gyh.wanandroid.data.bean.ArticleDataBean;
 import com.gyh.wanandroid.data.bean.BannerDataBean;
 import com.gyh.wanandroid.databinding.FragmentHomePage3Binding;
+import com.gyh.wanandroid.view.activity.MainActivity;
 import com.gyh.wanandroid.viewmodule.HomePageViewModel;
 import com.jaeger.library.StatusBarUtil;
+import com.qw.soul.permission.SoulPermission;
+import com.qw.soul.permission.bean.Permission;
+import com.qw.soul.permission.bean.Permissions;
+import com.qw.soul.permission.callbcak.CheckRequestPermissionListener;
 
 import java.util.List;
 
+import butterknife.internal.Utils;
 import cn.bingoogolapple.bgabanner.BGABanner;
 
 /**
@@ -54,12 +63,14 @@ public class HomePageFragment extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+//        PermissUtils.cameraPermiss();
+
         initData();
 
     }
 
     private void initData() {
-        HomePageViewModel viewModel = new HomePageViewModel(bindView,this);
+        HomePageViewModel viewModel = new HomePageViewModel(bindView, this);
         bindView.setViewModel(viewModel);
 
     }

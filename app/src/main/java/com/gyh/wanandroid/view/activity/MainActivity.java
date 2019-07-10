@@ -1,6 +1,7 @@
 package com.gyh.wanandroid.view.activity;
 
 import android.arch.lifecycle.Observer;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -21,6 +22,8 @@ import com.base.gyh.baselib.adapter.vpager.MyFragmentVPAdapter;
 import com.base.gyh.baselib.base.BaseActivity;
 import com.base.gyh.baselib.base.IBaseHttpResultCallBack;
 import com.base.gyh.baselib.data.remote.retrofit.HttpUtils;
+import com.base.gyh.baselib.utils.PermissUtils;
+import com.base.gyh.baselib.utils.mylog.Logger;
 import com.base.gyh.baselib.widgets.view.ZQImageViewRoundOval;
 import com.gyh.wanandroid.R;
 import com.gyh.wanandroid.app.AppConstant;
@@ -78,8 +81,13 @@ public class MainActivity extends BaseActivity
             nickName.setText(nickNameS);
         }
         navigationView.setNavigationItemSelectedListener(this);
-
         setListener();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Logger.d("%s+++++++++++%s","guoyh",requestCode+"---------------"+resultCode);
     }
 
     private void setListener() {

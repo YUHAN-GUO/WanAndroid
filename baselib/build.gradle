@@ -62,11 +62,9 @@ dependencies {
     api deps.supportX.multidex
     api deps.supportX.design
     api deps.supportX.constraint_layout
-    //    api 'com.squareup.okio:okio:1.15.0'
     //ButterKnife
     api deps.butterknifeX.butterknife
     annotationProcessor deps.butterknifeX.butterknife_compiler
-
     //Other
     api deps.utilsX.gson
     api deps.utilsX.banner
@@ -87,7 +85,7 @@ dependencies {
     //权限处理
     api 'com.qw:soulpermission:1.1.6'
     //WebView
-    api 'com.just.agentweb:agentweb:4.0.3-beta' // (必选)
+    api 'com.just.agentweb:agentweb:4.0.3-beta'
     api 'com.lcodecorex:tkrefreshlayout:1.0.7'
 //    api  'cn.yc:YCStateLib:1.1.6'
     //LoadingAnim

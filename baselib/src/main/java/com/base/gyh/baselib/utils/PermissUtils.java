@@ -12,9 +12,13 @@ import android.support.annotation.RequiresApi;
 import android.widget.Toast;
 
 import com.base.gyh.baselib.adapter.permission.CheckRequestPermissionAdapter;
+import com.base.gyh.baselib.base.IBaseHttpResultCallBack;
+import com.base.gyh.baselib.manager.ServerException;
+import com.base.gyh.baselib.utils.mylog.Logger;
 import com.qw.soul.permission.SoulPermission;
 import com.qw.soul.permission.bean.Permission;
 import com.qw.soul.permission.bean.Permissions;
+import com.qw.soul.permission.callbcak.CheckRequestPermissionsListener;
 
 /**
  * Created by GUOYH on 2019/5/24.
@@ -23,8 +27,8 @@ import com.qw.soul.permission.bean.Permissions;
 public class PermissUtils {
     /**
      * 存储权限
-     *  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-     *     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+     * <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+     * <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
      */
     public static void readWritePermiss(final Activity activity, final int requestCode) {
         SoulPermission.getInstance().checkAndRequestPermissions(
@@ -41,7 +45,7 @@ public class PermissUtils {
     /**
      * 位置权限
      * <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-     *     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+     * <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
      */
     public static void locationPermiss(final Activity activity, final int requestCode) {
         SoulPermission.getInstance().checkAndRequestPermissions(
@@ -58,37 +62,43 @@ public class PermissUtils {
     /**
      * 日历权限
      * <uses-permission android:name="android.permission.WRITE_CALENDAR"/>
-     *     <uses-permission android:name="android.permission.READ_CALENDAR"/>
+     * <uses-permission android:name="android.permission.READ_CALENDAR"/>
      */
-    public static void calendarPermiss(final Activity activity, final int requestCode) {
+    public static void calendarPermiss(IBaseHttpResultCallBack<String> callBack) {
         SoulPermission.getInstance().checkAndRequestPermissions(
                 Permissions.build(Manifest.permission.READ_CALENDAR,
                         Manifest.permission.WRITE_CALENDAR),
-                new CheckRequestPermissionAdapter() {
+                new CheckRequestPermissionsListener() {
                     @Override
                     public void onAllPermissionOk(Permission[] allPermissions) {
-                        Toast.makeText(activity, "日历权限获取成功", Toast.LENGTH_SHORT).show();
+                        callBack.onSuccess("日历权限获取成功");
+                    }
+
+                    @Override
+                    public void onPermissionDenied(Permission[] refusedPermissions) {
+                        callBack.onError(new ServerException(1,"日历权限申请失败"));
+
                     }
                 });
     }
 
     /**
      * 相机权限
-     *     <uses-permission android:name="android.permission.CAMERA"/>
+     * <uses-permission android:name="android.permission.CAMERA"/>
      */
-    public static void cameraPermiss(final Activity activity, final int requestCode) {
+    public static void cameraPermiss() {
         SoulPermission.getInstance().checkAndRequestPermission(Manifest.permission.CAMERA,
                 new CheckRequestPermissionAdapter() {
                     @Override
                     public void onPermissionOk(Permission permission) {
-                        Toast.makeText(activity, "相机权限获取成功", Toast.LENGTH_SHORT).show();
-
+                        Logger.d("%s+++++++++++++++%s","guoyh","相机权限获取成功");
                     }
                 });
     }
+
     /**
      * 信息权限
-     *     <uses-permission android:name="android.permission.SEND_SMS"/>
+     * <uses-permission android:name="android.permission.SEND_SMS"/>
      */
     public static void smsPermiss(final Activity activity, final int requestCode) {
         SoulPermission.getInstance().checkAndRequestPermission(Manifest.permission.SEND_SMS,
@@ -100,11 +110,12 @@ public class PermissUtils {
                     }
                 });
     }
+
     /**
      * 传感器权限
-     *     <uses-permission android:name="android.permission.BODY_SENSORS"/>
+     * <uses-permission android:name="android.permission.BODY_SENSORS"/>
      */
-    public static void bodySensorsPermiss (final Activity activity, final int requestCode) {
+    public static void bodySensorsPermiss(final Activity activity, final int requestCode) {
         SoulPermission.getInstance().checkAndRequestPermission(Manifest.permission.BODY_SENSORS,
                 new CheckRequestPermissionAdapter() {
                     @Override
@@ -114,9 +125,10 @@ public class PermissUtils {
                     }
                 });
     }
+
     /**
      * 麦克风权限
-     *     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+     * <uses-permission android:name="android.permission.RECORD_AUDIO"/>
      */
     public static void recordAudioPermiss(final Activity activity, final int requestCode) {
         SoulPermission.getInstance().checkAndRequestPermission(Manifest.permission.RECORD_AUDIO,
@@ -132,7 +144,7 @@ public class PermissUtils {
 
     /**
      * 拨打指定电话
-     *     <uses-permission android:name="android.permission.CALL_PHONE"/>
+     * <uses-permission android:name="android.permission.CALL_PHONE"/>
      */
     public static void makeCall(final Activity activity, final int requestCode, final String phoneNumber) {
         SoulPermission.getInstance().checkAndRequestPermission(Manifest.permission.CALL_PHONE,
@@ -150,7 +162,7 @@ public class PermissUtils {
 
     /**
      * 选择联系人
-     *     <uses-permission android:name="android.permission.READ_CONTACTS"/>
+     * <uses-permission android:name="android.permission.READ_CONTACTS"/>
      */
     public static void chooseContact(final Activity activity, final int requestCode) {
         SoulPermission.getInstance().checkAndRequestPermission(Manifest.permission.READ_CONTACTS,
@@ -200,3 +212,7 @@ public class PermissUtils {
         return contact;
     }
 }
+/**
+ * 使用须知：
+ * 首先在清单文件中加入相对应的权限
+ */

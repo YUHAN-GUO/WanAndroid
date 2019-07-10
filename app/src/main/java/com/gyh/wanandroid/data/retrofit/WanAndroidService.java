@@ -66,7 +66,6 @@ public interface WanAndroidService {
 
     /**
      * 体系
-     *
      * @return
      */
     @GET("/tree/json")
